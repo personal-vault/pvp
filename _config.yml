@@ -1,8 +1,9 @@
-title: Private Vault Project
-description: An insightful, secure and searchable vault for your private data
+title: PVP
+description: "Personal Vault Project: An insightful, secure and searchable vault for your private data."
 theme: just-the-docs
 
-url: https://dlucian.github.io/pvp
+# url: https://dlucian.github.io/pvp
+url: https://pages.daniliuc.com/pvp
 
 aux_links:
   Template Repository: https://github.com/just-the-docs/just-the-docs-template
