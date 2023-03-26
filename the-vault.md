@@ -52,8 +52,7 @@ A local storage system that has S3 can probably be mounted locally via various t
 
 Services that have an API can be imported and synchronized automatically.
 
-- Gmail
-
+See [Anything to S3]({% link anything-to-s3.md %}) for a list of these.
 
 ## Manually importing data
 
