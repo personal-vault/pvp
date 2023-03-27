@@ -63,7 +63,7 @@ Imagine having everything at your fingertips, backed up, encrypted and forever y
 
 ## Structure
 
-![PVP structure](/assets/images/pvp-structure.png)
+![PVP structure]({% link /assets/images/pvp-structure.png %})
 
 This system should not impact the way you use any online service, the most frictionless integration is the PESOS approach[^1], which means you publish everywhere and syndicate to your own site. In our case, our own vault.
 
@@ -77,8 +77,7 @@ And last but not least, since you own all your stuff, sharing it with your frien
 
 ## Contributing
 
-So far, this is just an idea. As I am gathering information, I will add it here. If you're interested in contributing in any way, [get in touch]({link contact.md}) with me.
-
+If you're interested in contributing in any way, [get in touch](https://daniliuc.com/) with me.
 
 ----
 [^1]: [PESOS on Indieweb](https://indieweb.org/PESOS)
