@@ -51,13 +51,13 @@ Calling this one **"[The AI]"**.
 
 A pluggable note-taking tool might include resources from within your vault that match the subject of the note you're looking at...
 
-![Obsidian concept](/assets/images/Obsidian-screenshot.png)
+![Obsidian concept]({% link /assets/images/Obsidian-screenshot.png %})
 
 Notice the **Related files**, **Related communications**, **Relate resources** and even **Visited websites** in the sidebar.
 
 If you're using a Spotlight-like application such as [Alfred](https://www.alfredapp.com/) or [Raycast](https://www.raycast.com/), you could search your entire archive from within anywhere:
 
-![Alfred Raycast mockup](/assets/images/alfred-raycast.png)
+![Alfred Raycast mockup]({% link /assets/images/alfred-raycast.png %})
 
 Imagine having everything at your fingertips, backed up, encrypted and forever yours.
 
