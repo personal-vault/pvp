@@ -5,6 +5,9 @@ nav_order: 1
 ---
 # The Personal Vault Project
 
+{: .highlight }
+📣 NEW: [Join the discussions](https://github.com/dlucian/pvp/discussions) on GitHub
+
 **For some of us, a considerable part of our lives is digital: photos, documents, movies, music, services, navigation, journaling, designs, inspiration, sketches, boarding passes, taxi orders, food menus, communication of various types (chats, discussions, emails), source code, notes, tasks, projects, newspapers, books, quotes, articles, schedules and more**.
 
 That's a lot, right? 👀
@@ -77,7 +80,7 @@ And last but not least, since you own all your stuff, sharing it with your frien
 
 ## Contributing
 
-If you're interested in contributing in any way, [get in touch](https://daniliuc.com/) with me.
+If you're interested in contributing, **[join the discussions](https://github.com/dlucian/pvp/discussions) on GitHub**.
 
 ----
 [^1]: [PESOS on Indieweb](https://indieweb.org/PESOS)

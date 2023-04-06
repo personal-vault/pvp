@@ -3,7 +3,7 @@ title: Online Resources
 layout: default
 nav_order: 100
 ---
-## Online Resources
+# Online Resources
 
 - Storage
     - [Ceph.com](https://ceph.com/en/)
@@ -18,17 +18,6 @@ nav_order: 100
         - [tomsing1/goofyfs.md](https://gist.github.com/tomsing1/8ea0169f7a47224accc3ae18ca14e951) Mounting an S3 bucket as a folder on Mac OS X
     - Cloud storage providers
         - [Hetzner](http://hetzner.com)
-- Note-taking / Obsidian
-    - [forum.obsidian.md/t/interest-in-plugin-to-mimic-mem-x-functionality/43584](https://forum.obsidian.md/t/interest-in-plugin-to-mimic-mem-x-functionality/43584)
-    - [github.com/brianpetro/obsidian-smart-connections](https://github.com/brianpetro/obsidian-smart-connections)
-    - [www.reddit.com/r/ObsidianMD/comments/vt20p2/i_tried_mem_and_came_crying_back_to_obsidian/](https://www.reddit.com/r/ObsidianMD/comments/vt20p2/i_tried_mem_and_came_crying_back_to_obsidian/)
-    - [github.com/dhruvik7/obsidian-daily-stats](https://github.com/dhruvik7/obsidian-daily-stats)
-    - [www.goedel.io/p/interlude-obsidian-vs-100000](https://www.goedel.io/p/interlude-obsidian-vs-100000) and [www.youtube.com/watch?v=QWfGfzlvxfA](https://www.youtube.com/watch?v=QWfGfzlvxfA)
-    - [publish.obsidian.md/hub/00+-+Start+here](https://publish.obsidian.md/hub/00+-+Start+here)
-- Note-taking / OneNote
-    - [learn.microsoft.com/en-us/graph/integrate-with-onenote](https://learn.microsoft.com/en-us/graph/integrate-with-onenote)
-- Note-taking / VSCode
-    - [mem.ai/m/2IuLcksNoxZjMjFGk8bK](https://mem.ai/m/2IuLcksNoxZjMjFGk8bK)
 - AI
     - [llamahub.ai](https://llamahub.ai/) with [Elasicsearch Loader](https://llamahub.ai/l/elasticsearch)
     - [rewind.ai/chatgpt-for-me](https://www.rewind.ai/chatgpt-for-me)
@@ -45,3 +34,25 @@ nav_order: 100
     - [lobste.rs/s/lubstu/personal_wikis_lobster_s_tale](https://lobste.rs/s/lubstu/personal_wikis_lobster_s_tale)
     - [www.solipsys.co.uk/new/BloggingAndNoteTaking.html](https://www.solipsys.co.uk/new/BloggingAndNoteTaking.html)
 
+## Note-taking
+
+### Obsidian
+
+- [forum.obsidian.md/t/interest-in-plugin-to-mimic-mem-x-functionality/43584](https://forum.obsidian.md/t/interest-in-plugin-to-mimic-mem-x-functionality/43584)
+- [github.com/brianpetro/obsidian-smart-connections](https://github.com/brianpetro/obsidian-smart-connections)
+- [www.reddit.com/r/ObsidianMD/comments/vt20p2/i_tried_mem_and_came_crying_back_to_obsidian/](https://www.reddit.com/r/ObsidianMD/comments/vt20p2/i_tried_mem_and_came_crying_back_to_obsidian/)
+- [github.com/dhruvik7/obsidian-daily-stats](https://github.com/dhruvik7/obsidian-daily-stats)
+- [www.goedel.io/p/interlude-obsidian-vs-100000](https://www.goedel.io/p/interlude-obsidian-vs-100000) and [www.youtube.com/watch?v=QWfGfzlvxfA](https://www.youtube.com/watch?v=QWfGfzlvxfA)
+- [publish.obsidian.md/hub/00+-+Start+here](https://publish.obsidian.md/hub/00+-+Start+here)
+
+### OneNote
+
+- [learn.microsoft.com/en-us/graph/integrate-with-onenote](https://learn.microsoft.com/en-us/graph/integrate-with-onenote)
+
+### VSCode
+
+- [mem.ai/m/2IuLcksNoxZjMjFGk8bK](https://mem.ai/m/2IuLcksNoxZjMjFGk8bK)
+
+## Articles
+
+- [The Verge: My impossible search for the best, most powerful, most private journaling app ever](https://www.theverge.com/2023/3/29/23660375/journaling-app-day-one-security-personal-space)

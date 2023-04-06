@@ -6,3 +6,7 @@ url: https://dlucian.github.io/pvp
 
 aux_links:
   Docs Repository: https://github.com/dlucian/pvp
+
+callouts:
+  highlight:
+    color: yellow

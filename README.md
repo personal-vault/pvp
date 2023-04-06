@@ -1,5 +1,7 @@
 # PVP Documentation
 
+See the [Discussions section](https://github.com/dlucian/pvp/discussions) to ask, comment, suggest or contribute.
+
 ## Building and previewing your site locally
 
 Assuming [Jekyll] and [Bundler] are installed on your computer:
