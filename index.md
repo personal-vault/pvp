@@ -6,7 +6,7 @@ nav_order: 1
 # The Personal Vault Project
 
 {: .highlight }
-📣 NEW: Join the [discussions on GitHub](https://github.com/dlucian/pvp/discussions) or [PVP Discord Server](https://discord.gg/X88sjgga).
+📣 NEW: Join the [discussions on GitHub](https://github.com/dlucian/pvp/discussions) or [PVP Discord Server](https://discord.gg/8k8rRbKh).
 
 **For some of us, a considerable part of our lives is digital: photos, documents, movies, music, services, navigation, journaling, designs, inspiration, sketches, boarding passes, taxi orders, food menus, communication of various types (chats, discussions, emails), source code, notes, tasks, projects, newspapers, books, quotes, articles, schedules and more**.
 
