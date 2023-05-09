@@ -85,9 +85,9 @@ If you're interested in contributing, **[join the discussions](https://github.co
 ----
 [^1]: [PESOS on Indieweb](https://indieweb.org/PESOS)
 
-[The Vault]: {% link the-vault.md %}
-[The Index]: {% link the-index.md %}
-[The AI]: {% link the-ai.md %}
+[The Vault]: {% link docs/the-vault.md %}
+[The Index]: {% link docs/the-index.md %}
+[The AI]: {% link docs/the-ai.md %}
 
 [LlamaIndex]: https://github.com/jerryjliu/llama_index
 [LangChain]: https://github.com/hwchase17/langchain
