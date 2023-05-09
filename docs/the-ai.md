@@ -2,6 +2,7 @@
 title: The AI
 layout: default
 nav_order: 30
+parent: Concepts
 ---
 # The A.I.
 

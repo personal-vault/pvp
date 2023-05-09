@@ -3,6 +3,7 @@ title: The Metadata
 layout: default
 nav_order: 15
 has_children: false
+parent: Concepts
 ---
 # The Metadata
 

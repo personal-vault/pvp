@@ -5,7 +5,7 @@ nav_order: 90
 ---
 # Contributing
 
-This is a massive project with many moving parts. As it gets clearer, we'll list more collaboration channels.
+This is a massive project with many moving parts. As it gets clearer, we'll list more collaboration channels. We are looking for collaborators, so if you've been trying to scratch the personal-data-vault itch, get in touch with us.
 
 Until then feel free to say hi:
 

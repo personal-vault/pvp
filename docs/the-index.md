@@ -2,6 +2,7 @@
 title: The Index
 layout: default
 nav_order: 20
+parent: Concepts
 ---
 # The Index
 
