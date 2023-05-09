@@ -48,4 +48,4 @@ The deployment GitHub Actions workflow is heavily based on GitHub's mixed-party 
 [starter workflows]: https://github.com/actions/starter-workflows/blob/main/pages/jekyll.yml
 [actions/starter-workflows]: https://github.com/actions/starter-workflows/blob/main/LICENSE
 [AGPL License]: https://www.gnu.org/licenses/agpl-3.0.en.html
-[docs/just-the-docs/LICENSE]: main/docs/just-the-docs/LICENSE
+[docs/just-the-docs/LICENSE]: docs/just-the-docs/LICENSE
