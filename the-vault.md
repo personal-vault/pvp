@@ -11,19 +11,55 @@ It's nearly impossible to predict which storage solution will be around in 10 or
 
 Requirements for the storage system:
 
-1. To be replicated in multiple locations (no single point of failure, **resilient**).
-1. To be encrypted at rest (**secure**).
-1. To be encrypted in transport (**private**).
-1. To be accessible via a simple, generic protocol (**generic**).
+1. Replicated in multiple locations (no single point of failure, **resilient**).
+1. Encrypted at rest (**secure**).
+1. Encrypted in transport (**private**).
+1. Accessible via a simple, generic protocol (**generic**).
 
-As the most popular storage system is the file system, for the purposes of The Vault, an object storage system might be a better solution, for two reasons:
+Since we're aiming for generic, for storage systems, the top 3 most basic storage systems might be:
 
-1. it allows embedding of meta information for each object, this can be important information such as a description of an image that should be stored and processed together with the image.
-1. it allows storing many small files without worrying about inodes[^1] and available space.
+1. File systems, which organize and store files on a computer’s hard drive or other storage devices.
+1. Block storage systems, which divide data into fixed-sized blocks and store them on separate physical devices.
+1. Object storage systems, which store data as discrete objects with unique identifiers and metadata, and can be accessed over a network using APIs.
+
+## Everything is a file
+
+Even though the blocks storage and object storage might be good options, to keep things as simple as possible, we're going to assume that everything is a file, and use the file system as the basic storage system. It's old and stable enough, easy to understand and to scale, and will probably be around for a long time.
+
+Using the [PESOS] model, users will probably already use big brand services such as Google. Therefore, a good starting point for building a persona vault is downloading all the data in Google via the [Google Takeout] service. This download is a file system download, where all of a user's data is organized in folders and files. Even if some of the files are JSON files that might be stored in an object storage system.
+
+## Drop it anywhere
+
+One of the reasons that organization systems are failing is that the mindset used when we store information is not the same mindset used when we search for the information. Therefore, one essential rule to keep in mind for this system is that it shouldn't matter how you organize the file system. Even more important since organizing one's entire digital life sounds like a complex task that could take a long time and still not be the perfect organization system.
+
+Second reason to be able to drop it anywhere is that we are using various systems that have data organized in various way, so there's no single organizational system that will be suitable for everyone.
+
+The only requirement is that the top-level folder should probably be a username, to facilitate storage of multiple users of an organization/company/family/group.
+
+## Should be mountable
+
+No matter what OS we are using, the simplest way to organize a file system is to mount it locally as a drive.
+
+The storage solution should then have a mountable interface (such as [Samba], [NFS], [iSCSI] or [WebDav]).
+
+## Storage system of choice: ZFS
+
+ZFS began as part of the Sun Microsystems Solaris operating system in 2001[^5].
+
+It ticks all the boxes, being resilient, secure, and generic. One can even rent ZFS storage[^6] without having to trust the owners, thanks to encryption at rest.
+
+With ZFS, we have an ability to use various drives and create a pool of device to form one solid storage with a certain degree of data-distribution
+
+## Other solutions
+
+### S3-compatible object-storage
+
+An object storage system might be a solution, for two reasons:
+
+1. It allows embedding of meta information for each object, this can be important information such as a description of an image that should be stored and processed together with the image.
+1. It allows storing many small files without worrying about inodes[^1] and available space.
 
 > **Object storage** is a computer data storage that manages data as objects, as opposed to other storage architectures like file systems which manages data as a file hierarchy, and block storage which manages data as blocks within sectors and tracks.[^2]
-
-## S3 Compatible Storage
 
 Several cloud services support object storage and offer a common interface known as the S3, from [Amazon's S3] service: [Linode Object Storage], [DigitalOcean Spaces], [OVH Cloud], [Seagate Lyve Cloud], [Google Cloud Storage] and even some that you might have not even heard about, like [IONOS S3 Object Storage] or [Vultr Object Storage]. See [S3 Compatible APIs] for a nice list of them.
 
@@ -40,27 +76,31 @@ For on-the-premises storage, there are a few options as well that include an S3-
 
 Depending on your needs and expertise, either of the above _should_ be fine.
 
-## File System Storage
-
-Object storage works great for data pulled in via APIs or other sync scripts, however for a document storage which is easily accessible from a personal computer, a mountable volume is preferred.
-
-Ideally the storage solution should have a mountable interface (such as [NFS], [iSCSI] or [WebDav]).
-
 A local storage system that has S3 can probably be mounted locally via various tools such as [s3fs-fuse] ([MinIO S3FS example](https://github.com/nitisht/cookbook/blob/master/docs/s3fs-fuse-with-minio.md)), however performance wise it's not a great idea.
 
 ## Online services sync
 
 Services that have an API can be imported and synchronized automatically.
 
-See [Anything to S3]({% link anything-to-s3.md %}) for a list of these.
-
 ## Manually importing data
 
 Some services (such as Whatsapp) don't have an API, and thus must be imported manually. The import procedure might be automated to some extent, but exporting is usually done personally and manually.
 
+The big brands have options to manually request a download of all one's data:
+
+- [Google Takeout]
+- Facebook: Download your Information[^3]
+- Apple: Get a copy of your data[^4]
+
+The importing procedure must be idempotent, in such a way that importing every X months would not generate a completely different copy, but will add up to the already imported archive.
+
 ----
 [^1]: [wikipedia.org/wiki/Inode](https://en.wikipedia.org/wiki/Inode)
 [^2]: [wikipedia.org/wiki/Object_storage](https://en.wikipedia.org/wiki/Object_storage)
+[^3]: [www.facebook.com/help/212802592074644](https://www.facebook.com/help/212802592074644)
+[^4]: [support.apple.com/en-us/HT208502](https://support.apple.com/en-us/HT208502)
+[^5]: [encyclopedia.pub/entry/35912](https://encyclopedia.pub/entry/35912)
+[^6]: [zfs.rent](https://zfs.rent/)
 
 [Amazon's S3]: https://docs.aws.amazon.com/s3/index.html
 [OVH Cloud]: https://www.ovhcloud.com/en-ie/public-cloud/object-storage/
@@ -79,3 +119,6 @@ Some services (such as Whatsapp) don't have an API, and thus must be imported ma
 [iSCSI]: https://en.wikipedia.org/wiki/ISCSI
 [WebDav]: https://en.wikipedia.org/wiki/WebDAV
 [s3fs-fuse]: https://github.com/s3fs-fuse/s3fs-fuse
+[Google Takeout]: https://takeout.google.com/settings/takeout
+[PESOS]: https://indieweb.org/PESOS
+[Samba]: https://www.samba.org/
