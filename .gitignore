@@ -11,3 +11,7 @@ vendor/
 
 # Ignore useless files
 .DS_Store
+vault/
+.env
+app.log
+image.jpg
