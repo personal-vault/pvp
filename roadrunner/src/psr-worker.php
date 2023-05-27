@@ -4,20 +4,18 @@ declare(strict_types=1);
 
 use Spiral\RoadRunner;
 use Nyholm\Psr7;
+use Nyholm\Response;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Kint\Kint;
 
 require_once(dirname(__FILE__) . '/../vendor/autoload.php');
 
-$router = new League\Route\Router;
+Kint::$return = true;
+Kint::$cli_detection = false;
+Kint::$expanded = true;
 
-// map a route
-$router->map('GET', '/', function (ServerRequestInterface $request): ResponseInterface {
-    $response = (new Psr7\Response)->withStatus(201);
-    $response->getBody()->write('<h1>Hello, World!</h1>' . json_encode($request->getAttributes()));
-    return $response;
-});
+$router = new League\Route\Router;
+$router->get('/', 'Acme\Controller\Home::getMethod');
 
 $worker = RoadRunner\Worker::create();
 $psrFactory = new Psr7\Factory\Psr17Factory();
@@ -25,11 +23,9 @@ $psrFactory = new Psr7\Factory\Psr17Factory();
 $worker = new RoadRunner\Http\PSR7Worker($worker, $psrFactory, $psrFactory, $psrFactory);
 
 $count = 0;
-while ($req = $worker->waitRequest()) {
+while ($request = $worker->waitRequest()) {
     try {
-        // $rsp = new Psr7\Response();
-        // $rsp->getBody()->write('Hello world O.o... ' . $req->getUri()->getPath());
-        $rsp = $router->dispatch($req);
+        $response = $router->dispatch($request);
 
         $count++;
         if ($count > 10) {
@@ -37,8 +33,16 @@ while ($req = $worker->waitRequest()) {
             return;
         }
 
-        $worker->respond($rsp);
+        $worker->respond($response);
     } catch (\Throwable $e) {
-        $worker->getWorker()->error((string)$e);
+        //TODO: Log error via Monolog
+
+        $response = (new Response())
+            ->withStatus(500)
+            ->withHeader('Content-Type', 'text/html; charset=utf-8');
+        $response->getBody()->write(Kint::dump($e));
+        $worker->respond($response);
+
+        $worker->getWorker()->error((string) $e);
     }
 }

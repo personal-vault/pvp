@@ -13,11 +13,18 @@ See the [Discussions section](https://github.com/dlucian/pvp/discussions) to ask
 
 Components:
 - [`/storage`](storage/) - ZFS tools
-- [`/metasweep`](metasweep/) - Metadata extraction & processing tools
-- [`/index`](index/) - Indexing tools
-- [`/llm`](llm/) - LLM tools
+- [`/roadrunner`](roadrunner/) - Metadata extraction & processing tools
 - [`/database`](database/) - The relational database
-- [`/viewer`](/viewer) - Web interface
+- [`/index`](index/) - _(future)_ Indexing tools
+- [`/llm`](llm/) - _(future)_ LLM tools
+- [`/viewer`](/viewer) - _(future)_ Web interface
+
+## Development
+
+```shell
+# Destroy all conainers + volumes and rebuild from scratch
+docker compose down -v && docker compose up --build
+```
 
 ## Licensing and Attribution
 

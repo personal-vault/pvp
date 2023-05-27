@@ -23,28 +23,6 @@ services:
       - '7020:6001'
       - '7030:8080'
 
-  # index:
-  #   container_name: index
-  #   build:
-  #     context: ./index
-  #   environment:
-  #     - VAULT_PATH=${VAULT_PATH}
-  #   volumes:
-  #     - type: bind
-  #       source: ${HOST_VAULT_PATH}
-  #       target: ${VAULT_PATH}
-  #   networks:
-  #     - internal
-  #   depends_on:
-  #     - database
-  #     - storage_init
-
-  # llm:
-  #   build:
-  #     context: ./llm
-  #   depends_on:
-  #     - database
-
   database:
     container_name: postgres
     image: postgres:15-alpine3.18

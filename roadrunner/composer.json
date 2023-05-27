@@ -9,6 +9,12 @@
         "league/route": "^5.1"
     },
     "require-dev": {
-        "phpunit/phpunit": "^10.1"
+        "phpunit/phpunit": "^10.1",
+        "kint-php/kint": "^5.0"
+    },
+    "extra": {
+        "kint": {
+            "disable-helpers": false
+        }
     }
 }
