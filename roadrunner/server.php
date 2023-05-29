@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use League\Container\ReflectionContainer;
 use Nyholm\Psr7;
-use Nyholm\Psr7\Factory\Psr17Factory;
 use Nyholm\Psr7\Response;
 use Spiral\RoadRunner\Environment;
 use Spiral\RoadRunner\Environment\Mode;
@@ -13,10 +12,8 @@ use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 use RoadRunner\Logger\Logger;
 use Spiral\Goridge\RPC\RPC;
 use Spiral\RoadRunner;
-use Spiral\RoadRunner\Http\PSR7Worker;
-use Spiral\RoadRunner\Worker;
 
-require_once(dirname(__FILE__) . '/../vendor/autoload.php');
+require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 // Create container and router
 $container = new League\Container\Container();
@@ -26,7 +23,7 @@ $strategy = (new League\Route\Strategy\ApplicationStrategy)->setContainer($conta
 $router   = (new League\Route\Router)->setStrategy($strategy);
 
 // Define routes
-$router->get('/', 'Acme\Controller\Home::getMethod');
+$router->get('/', 'Memorelia\Controller\Home::getMethod');
 
 // Add implementations to container
 $rpc = RPC::create('tcp://127.0.0.1:6001');
@@ -91,13 +88,16 @@ if ($isJobsMode) {
     $count = 0;
     /** @var ReceivedTaskInterface $task */
     while ($task = $consumer->waitTask()) {
-        // $logger->info('Task: ' . $task->getId() . ' ' . $task->getName() . ' ' . $task->getPayload());
+        $shouldBeRestarted = false;
         $action = $container->get($task->getName());
         try {
             $action->run($task->getId(), $task->getPayload());
             $task->complete();
         } catch (\Throwable $e) {
-            $task->fail($e, $shouldBeRestarted);
+            $task
+                ->withHeader('attempts', (string) ((int) $task->getHeaderLine('attempts') - 1))
+                ->withHeader('retry-delay', (string) ((int) $task->getHeaderLine('retry-delay') * 2))
+                ->fail($e, $shouldBeRestarted);
         } finally {
             $count++;
             if ($count > 100) {
@@ -105,14 +105,31 @@ if ($isJobsMode) {
             }
         }
     }
-
 } else {
     $psrFactory = new Psr7\Factory\Psr17Factory();
     $worker = RoadRunner\Worker::create();
     $psr7 = new RoadRunner\Http\PSR7Worker($worker, $psrFactory, $psrFactory, $psrFactory);
 
     $count = 0;
-    while ($request = $psr7->waitRequest()) {
+    while (true) {
+        try {
+            $request = $psr7->waitRequest();
+        } catch (\Throwable $e) {
+            // Although the PSR-17 specification clearly states that there can be
+            // no exceptions when creating a request, however, some implementations
+            // may violate this rule. Therefore, it is recommended to process the
+            // incoming request for errors.
+            //
+            // Send "Bad Request" response.
+            $psr7->respond(new Response(400));
+            continue;
+        }
+
+        if ($request === null) {
+            // We are probably in debug mode so each request only lives once (YOLO mode)
+            return;
+        }
+
         try {
             $response = $router->dispatch($request);
 
@@ -124,6 +141,14 @@ if ($isJobsMode) {
 
             $psr7->respond($response);
         } catch (\Throwable $e) {
+            // In case of any exceptions in the application code, you should handle
+            // them and inform the client about the presence of a server error.
+            //
+            // Reply by the 500 Internal Server Error response
+            $psr7->respond(new Response(500, [], 'Something Went Wrong!'));
+
+            // Additionally, we can inform the RoadRunner that the processing
+            // of the request failed.
             $psr7->getWorker()->error((string) $e);
         }
     }

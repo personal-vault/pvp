@@ -1,6 +1,6 @@
 {
     "autoload": {
-        "psr-4": {"Acme\\": "src/"}
+        "psr-4": {"Memorelia\\": "src/"}
     },
     "require": {
         "php": "^8.1",

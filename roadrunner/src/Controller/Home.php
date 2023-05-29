@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Acme\Controller;
+namespace Memorelia\Controller;
 
+use Exception;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -26,7 +27,7 @@ class Home {
             ->withStatus(201)
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
 
-        $this->logger->info('Hello, Road Runner! Mic Mic Mic');
+        $this->logger->info('Home controller called');
 
         $response->getBody()->write(json_encode($request->getQueryParams()));
 

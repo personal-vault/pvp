@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Acme\Producer;
+namespace Memorelia\Producer;
 
-use Acme\Task\ScanFile;
+use Memorelia\Task\ScanFile;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Spiral\RoadRunner\Jobs\Jobs;

@@ -5,7 +5,7 @@ version: '3'
 rpc:
     listen: 'tcp://:6001'
 server:
-    command: 'php /var/www/src/psr-worker.php'
+    command: 'php /var/www/server.php'
     relay: "tcp://127.0.0.1:7000"
 http:
     address: '0.0.0.0:8080'
