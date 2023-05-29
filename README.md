@@ -15,15 +15,21 @@ Components:
 - [`/storage`](storage/) - ZFS tools
 - [`/roadrunner`](roadrunner/) - Metadata extraction & processing tools
 - [`/database`](database/) - The relational database
-- [`/index`](index/) - _(future)_ Indexing tools
-- [`/llm`](llm/) - _(future)_ LLM tools
-- [`/viewer`](/viewer) - _(future)_ Web interface
+- [`/index`](index/) - _(future)_ Indexing tools (future)
+- [`/llm`](llm/) - _(future)_ LLM tools (future)
+- [`/viewer`](/viewer) - _(future)_ Web interface (future)
 
 ## Development
 
 ```shell
 # Destroy all conainers + volumes and rebuild from scratch
 docker compose down -v && docker compose up --build
+
+# Destroy all conainers and rebuild from scratch
+docker compose down && docker compose up --build
+
+# Run the scan script
+docker compose exec --workdir /var/www roadrunner /bin/bash -c "php src/scan.php"
 ```
 
 ## Licensing and Attribution
