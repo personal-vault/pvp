@@ -3,6 +3,8 @@
 declare(strict_types=1);
 
 use League\Container\ReflectionContainer;
+use Memorelia\Database;
+use Meorelia\Repository\File;
 use Nyholm\Psr7;
 use Nyholm\Psr7\Response;
 use Spiral\RoadRunner\Environment;
@@ -28,13 +30,10 @@ $router->get('/', 'Memorelia\Controller\Home::getMethod');
 // Add implementations to container
 $rpc = RPC::create('tcp://127.0.0.1:6001');
 $container->add(Logger::class)->addArgument($rpc)->setShared(true);
-
-
-
-$logger = $container->get(Logger::class);
+// $container->add(Database::class)->setShared(true);
+// $container->add(File::class);
 
 $env = Environment::fromGlobals();
-
 $isJobsMode = $env->getMode() === Mode::MODE_JOBS;
 
 if ($isJobsMode) {
@@ -96,14 +95,11 @@ if ($isJobsMode) {
 
             $psr7->respond($response);
         } catch (\Throwable $e) {
-            // In case of any exceptions in the application code, you should handle
-            // them and inform the client about the presence of a server error.
-            //
-            // Reply by the 500 Internal Server Error response
-            $psr7->respond(new Response(500, [], 'Something Went Wrong!'));
-
             // Additionally, we can inform the RoadRunner that the processing
             // of the request failed.
+            // Reply by the 500 Internal Server Error response
+            $psr7->respond(new Response(500, [], 'Something Went Wrong: ' . (string) $e));
+
             $psr7->getWorker()->error((string) $e);
         }
     }

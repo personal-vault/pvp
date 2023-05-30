@@ -4,22 +4,18 @@ declare(strict_types=1);
 
 namespace Memorelia\Controller;
 
-use Exception;
+use Memorelia\Repository\File;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RoadRunner\Logger\Logger;
 
 class Home {
-    private Logger $logger;
 
-    /**
-     * @param RoadRunner\Logger\Logger $logger
-     */
-    public function __construct(Logger $logger)
-    {
-        $this->logger = $logger;
-    }
+    public function __construct(
+        private File $file,
+        private Logger $logger
+    ) {}
 
     public function getMethod(ServerRequestInterface $request): ResponseInterface
     {
@@ -28,6 +24,8 @@ class Home {
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
 
         $this->logger->info('Home controller called');
+
+        $this->file->insertIfNotExist('abcd', '/cucu', 'umu.txt', 123, 'text/plain');
 
         $response->getBody()->write(json_encode($request->getQueryParams()));
 

@@ -7,6 +7,8 @@ rpc:
 server:
     command: 'php /var/www/server.php'
     relay: "tcp://127.0.0.1:7000"
+    env:
+     - XDEBUG_SESSION: 1
 http:
     address: '0.0.0.0:8080'
     middleware:
@@ -19,7 +21,7 @@ http:
             - .htaccess
     pool:
         debug: true
-        num_workers: 4
+        num_workers: 1
         supervisor:
             max_worker_memory: 100
 jobs:
@@ -44,9 +46,9 @@ metrics:
 
 # Logging settings (docs: https://roadrunner.dev/docs/plugins-logger/2.x/en)
 logs:
-  mode: production
-  level: critical
-  encoding: json
+  mode: development
+  level: debug
+  encoding: console
   file_logger_options:
     log_output: "/var/www/logs/app.log"
     max_size: 10

@@ -9,6 +9,10 @@ services:
     restart: unless-stopped
     environment:
       - VAULT_PATH=${VAULT_PATH}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     networks:
       - internal
     volumes:
@@ -19,19 +23,22 @@ services:
       - ./roadrunner/config:/etc/roadrunner
     depends_on:
       - database
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - '7020:6001'
       - '7030:8080'
 
   database:
     container_name: postgres
-    image: postgres:15-alpine3.18
+    build:
+      context: ./database
     restart: unless-stopped
     user: postgres
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=mypassword
-      - POSTGRES_DB=mydb
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
     volumes:
       - postgres:/var/lib/postgresql/data
     ports:
