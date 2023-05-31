@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use App\Repository\File;
 use RoadRunner\Logger\Logger;
 
-class ScanFile
+class ScanFileTask
 {
     public function __construct(
         private File $file,

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Memorelia\Producer;
+namespace App\Producer;
 
-use Memorelia\Task\ScanFile;
+use App\Task\ScanFileTask;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Spiral\RoadRunner\Jobs\Jobs;
@@ -26,7 +26,7 @@ class Scan {
         foreach ($this->walk_directory($storage_path) as $file_path) {
             $this->logger->info($file_path . PHP_EOL);
             $queue->push(
-                ScanFile::class,
+                ScanFileTask::class,
                 payload: \json_encode(['filename' => (string) $file_path])
             );
         }

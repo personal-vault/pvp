@@ -9,21 +9,21 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RoadRunner\Logger\Logger;
 
-class Home {
+class ScanController {
 
     public function __construct(
         private Logger $logger
     ) {}
 
-    public function getMethod(ServerRequestInterface $request): ResponseInterface
+    public function postMethod(ServerRequestInterface $request): ResponseInterface
     {
         $response = (new Response)
-            ->withStatus(201)
+            ->withStatus(200)
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
 
-        $this->logger->info('Home controller called');
+        $this->logger->info('Scan controller called');
 
-        $response->getBody()->write(json_encode($request->getQueryParams()));
+        $response->getBody()->write(json_encode(['all' => 'good']));
 
         return $response;
     }

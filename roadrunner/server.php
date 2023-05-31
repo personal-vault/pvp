@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use League\Container\ReflectionContainer;
 use App\Database;
+use League\Route\Http\Exception\NotFoundException;
 use Meorelia\Repository\File;
 use Nyholm\Psr7;
 use Nyholm\Psr7\Response;
@@ -94,10 +95,23 @@ if ($isJobsMode) {
             }
 
             $psr7->respond($response);
+        } catch (NotFoundException $e) {
+            // https://datatracker.ietf.org/doc/html/rfc7807 Problem JSON errors
+            $psr7->respond(new Response(
+                404,
+                ['Content-Type' => 'application/problem+json; charset=utf-8'],
+                json_encode([
+                    'type' => 'https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404',
+                    'title' => 'Not Found',
+                    'status' => 404,
+                    'detail' => 'The requested resource could not be found. ¯\_(ツ)_/¯'
+                ])
+            ));
         } catch (\Throwable $e) {
             // Additionally, we can inform the RoadRunner that the processing
             // of the request failed.
             // Reply by the 500 Internal Server Error response
+            $container->get(Logger::class)->error((string) $e);
             $psr7->respond(new Response(500, [], 'Something Went Wrong: ' . (string) $e));
 
             $psr7->getWorker()->error((string) $e);
