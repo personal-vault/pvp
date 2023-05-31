@@ -25,7 +25,7 @@ $strategy = (new League\Route\Strategy\ApplicationStrategy)->setContainer($conta
 $router   = (new League\Route\Router)->setStrategy($strategy);
 
 // Define routes
-$router->get('/', 'Memorelia\Controller\Home::getMethod');
+require_once(dirname(__FILE__) . '/routes.php');
 
 // Add implementations to container
 $rpc = RPC::create('tcp://127.0.0.1:6001');

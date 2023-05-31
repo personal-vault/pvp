@@ -11,7 +11,8 @@
         "spiral/roadrunner-jobs": "^4.0",
         "roadrunner-php/app-logger": "^1.1",
         "spiral/goridge": "^4.0",
-        "league/container": "^4.2"
+        "league/container": "^4.2",
+        "symfony/yaml": "^6.3"
     },
     "require-dev": {
         "phpunit/phpunit": "^10.1"
