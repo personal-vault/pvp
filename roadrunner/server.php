@@ -21,8 +21,8 @@ require_once(dirname(__FILE__) . '/vendor/autoload.php');
 // Create container and router
 $container = new League\Container\Container();
 $container->delegate(new ReflectionContainer());
-$strategy = (new League\Route\Strategy\ApplicationStrategy)->setContainer($container);
 
+$strategy = (new League\Route\Strategy\ApplicationStrategy)->setContainer($container);
 $router   = (new League\Route\Router)->setStrategy($strategy);
 
 // Define routes

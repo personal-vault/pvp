@@ -7,7 +7,7 @@ use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Spiral\Goridge\RPC\RPC;
 
-require_once(dirname(__FILE__) . '/../vendor/autoload.php');
+require_once(dirname(__FILE__) . '/vendor/autoload.php');
 
 // Create container and router
 $container = new Container();
