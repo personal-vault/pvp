@@ -5,6 +5,8 @@ namespace App;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use RoadRunner\Logger\Logger;
 use Spiral\Goridge\RPC\RPC;
+use Spiral\RoadRunner\Jobs\Jobs;
+use Spiral\RoadRunner\Jobs\JobsInterface;
 
 /**
  * @link https://container.thephpleague.com/4.x/service-providers/
@@ -21,6 +23,7 @@ class ServiceProvider extends AbstractServiceProvider
     public function provides(string $id): bool
     {
         $services = [
+            JobsInterface::class,
             Logger::class,
         ];
 
@@ -40,17 +43,11 @@ class ServiceProvider extends AbstractServiceProvider
     {
         // $this->getContainer()->add('key', 'value');
 
-        // $this->getContainer()
-        //     ->add(Some\Controller::class)
-        //      ->addArgument(Some\Request::class)
-        //      ->addArgument(Some\Model::class)
-        // ;
         $rpc = RPC::create('tcp://127.0.0.1:6001');
         $this->getContainer()->add(Logger::class)
             ->addArgument($rpc)
             ->setShared(true);
 
-        // $this->getContainer()->add(Some\Request::class);
-        // $this->getContainer()->add(Some\Model::class);
+        $this->getContainer()->add(JobsInterface::class, new Jobs($rpc));
     }
 }

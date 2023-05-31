@@ -25,10 +25,11 @@ class Scan {
 
         foreach ($this->walk_directory($storage_path) as $file_path) {
             $this->logger->info($file_path . PHP_EOL);
-            $queue->push(
+            $task = $queue->create(
                 ScanFileTask::class,
                 payload: \json_encode(['filename' => (string) $file_path])
             );
+            $queue->dispatch($task);
         }
     }
 

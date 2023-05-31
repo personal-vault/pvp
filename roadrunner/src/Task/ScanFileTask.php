@@ -19,20 +19,22 @@ class ScanFileTask
     {
         $settings = json_decode($payload);
         assert($settings->filename !== null && is_string($settings->filename));
+        $file_path = '/vault' . $settings->filename;
+
         $start = microtime(true);
-        $checksum = $this->calculate_checksum($settings->filename);
+        $checksum = $this->calculate_checksum($file_path);
         $time = microtime(true) - $start;
 
-        $attributes = $this->extract_attributes($settings->filename)[0];
+        $attributes = $this->extract_attributes($file_path)[0];
 
-        $this->logger->info('|> ' . $checksum . ' ' . sprintf('%02.2f ', $time) . $settings->filename . ' ' . $attributes->MIMEType . PHP_EOL);
+        $this->logger->info('|> ' . $checksum . ' ' . sprintf('%02.2f ', $time) . $file_path . ' ' . $attributes->MIMEType . PHP_EOL);
 
         // Save to database
         $this->file->insertIfNotExist(
             $checksum,
-            $settings->filename,
+            $file_path,
             $attributes->FileName,
-            filesize($settings->filename),
+            filesize($file_path),
             $attributes->MIMEType
         );
     }
