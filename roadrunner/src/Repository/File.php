@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Memorelia\Repository;
+namespace App\Repository;
 
-use Memorelia\Database;
+use App\Database;
 use PDO;
 use PDOException;
 use RoadRunner\Logger\Logger;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Memorelia\Producer\Scan;
+use App\Producer\Scan;
 use League\Container\Container;
 use League\Container\ReflectionContainer;
 use Spiral\Goridge\RPC\RPC;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Memorelia\Controller;
+namespace App\Controller;
 
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;

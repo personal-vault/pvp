@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use League\Container\ReflectionContainer;
-use Memorelia\Database;
+use App\Database;
 use Meorelia\Repository\File;
 use Nyholm\Psr7;
 use Nyholm\Psr7\Response;

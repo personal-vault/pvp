@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Memorelia\Task;
+namespace App\Task;
 
 use InvalidArgumentException;
-use Memorelia\Repository\File;
+use App\Repository\File;
 use RoadRunner\Logger\Logger;
 
 class ScanFile

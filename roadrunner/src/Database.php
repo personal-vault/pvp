@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Memorelia;
+namespace App;
 
 use PDO;
 use PDOException;
