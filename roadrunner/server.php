@@ -3,9 +3,8 @@
 declare(strict_types=1);
 
 use League\Container\ReflectionContainer;
-use App\Database;
+use App\ServiceProvider;
 use League\Route\Http\Exception\NotFoundException;
-use Meorelia\Repository\File;
 use Nyholm\Psr7;
 use Nyholm\Psr7\Response;
 use Spiral\RoadRunner\Environment;
@@ -13,7 +12,6 @@ use Spiral\RoadRunner\Environment\Mode;
 use Spiral\RoadRunner\Jobs\Consumer;
 use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
 use RoadRunner\Logger\Logger;
-use Spiral\Goridge\RPC\RPC;
 use Spiral\RoadRunner;
 
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
@@ -21,18 +19,13 @@ require_once(dirname(__FILE__) . '/vendor/autoload.php');
 // Create container and router
 $container = new League\Container\Container();
 $container->delegate(new ReflectionContainer());
+$container->addServiceProvider(new ServiceProvider);
 
 $strategy = (new League\Route\Strategy\ApplicationStrategy)->setContainer($container);
 $router   = (new League\Route\Router)->setStrategy($strategy);
 
 // Define routes
 require_once(dirname(__FILE__) . '/routes.php');
-
-// Add implementations to container
-$rpc = RPC::create('tcp://127.0.0.1:6001');
-$container->add(Logger::class)->addArgument($rpc)->setShared(true);
-// $container->add(Database::class)->setShared(true);
-// $container->add(File::class);
 
 $env = Environment::fromGlobals();
 $isJobsMode = $env->getMode() === Mode::MODE_JOBS;
