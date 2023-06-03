@@ -7,6 +7,7 @@ namespace App\Task;
 use InvalidArgumentException;
 use App\Repository\FileRepository;
 use App\Scan\DirectoryScan;
+use App\Scan\FileCreated;
 use App\Scan\FileRemoved;
 use Psr\Log\LoggerInterface;
 
@@ -16,6 +17,7 @@ class ScanTask
 
     public function __construct(
         private DirectoryScan $directory_scan,
+        private FileCreated $file_created,
         private FileRemoved $file_removed,
         private FileRepository $file_repository,
         private LoggerInterface $logger
@@ -36,36 +38,34 @@ class ScanTask
     {
         $settings = json_decode($payload);
         assert($settings->filename !== null && is_string($settings->filename));
-        $file_path = $this->storage . $settings->filename;
+        $path = $this->storage . $settings->filename;
 
         // See if file is missing (has been moved or deleted)
-        if (file_exists($file_path) === false) {
-            $this->file_removed->process($file_path);
+        if (file_exists($path) === false) {
+            $this->file_removed->process($path);
             return;
         }
 
         // See if file is a directory
-        if (is_dir($file_path)) {
-            $this->directory_scan->process($file_path);
+        if (is_dir($path)) {
+            $this->directory_scan->process($path);
             return;
         }
 
         // Calculate the hash
-        $hash = $this->calculate_hash($file_path);
+        $hash = $this->calculate_hash($path);
 
         // Get the database rows that have the same hash or the same file path
-        $files = $this->file_repository->findByHashOrPath($hash, $file_path);
+        $files = $this->file_repository->findByHashOrPath($hash, $path);
 
         if (count($files) === 0) {
             // File Created
-            // TODO: Handle file created
-            // Insert DB row
-            // Dispatch analyze job
+            $this->file_created->process($path, $hash);
             return;
         }
 
         if ($files[0]->hash === $hash) {
-            if ($files[0]->path !== $file_path) {
+            if ($files[0]->path !== $path) {
                 // File Moved / Renamed
 
                 // Copy row to new path
@@ -75,44 +75,44 @@ class ScanTask
             return;
         }
 
-        if ($files[0]->path === $file_path) {
+        if ($files[0]->path === $path) {
             // Same file, different hash => File Updated
             // Update DB row, SET removed_at = null
 
             // Dispatch analyze job
         }
 
-        // $attributes = $this->extract_attributes($file_path)[0];
+        // $attributes = $this->extract_attributes($path)[0];
 
-        // $this->logger->info('|> ' . $hash . ' ' . sprintf('%02.2f ', $time) . $file_path . ' ' . $attributes->MIMEType . PHP_EOL);
+        // $this->logger->info('|> ' . $hash . ' ' . sprintf('%02.2f ', $time) . $path . ' ' . $attributes->MIMEType . PHP_EOL);
 
         // // Save to database
         // $this->file_repository->insertIfNotExist(
         //     $hash,
-        //     $file_path,
+        //     $path,
         //     $attributes->FileName,
-        //     filesize($file_path),
+        //     filesize($path),
         //     $attributes->MIMEType
         // );
     }
 
-    private function calculate_hash($file_path) {
+    private function calculate_hash($path) {
         $output = '';
         $exit_code = null;
-        exec('sha256sum ' . escapeshellarg($file_path), $output, $exit_code);
+        exec('sha256sum ' . escapeshellarg($path), $output, $exit_code);
         if ($exit_code !== 0) {
-            throw new InvalidArgumentException('Invalid file path: ' . $file_path);
+            throw new InvalidArgumentException('Invalid file path: ' . $path);
         }
         return explode(' ', $output[0])[0];
     }
 
-    private function extract_attributes($file_path): array
+    private function extract_attributes($path): array
     {
         $output = '';
         $exit_code = null;
-        exec('exiftool -j ' . escapeshellarg($file_path), $output, $exit_code);
+        exec('exiftool -j ' . escapeshellarg($path), $output, $exit_code);
         if ($exit_code !== 0) {
-            throw new InvalidArgumentException('Invalid file path: ' . $file_path);
+            throw new InvalidArgumentException('Invalid file path: ' . $path);
         }
         return json_decode(implode("\n", $output));
     }

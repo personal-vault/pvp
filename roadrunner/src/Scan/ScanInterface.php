@@ -9,5 +9,5 @@ use InvalidArgumentException;
  */
 interface ScanInterface
 {
-    public function process(string $file_path): void;
+    public function process(string $path, ?string $hash = null): void;
 }

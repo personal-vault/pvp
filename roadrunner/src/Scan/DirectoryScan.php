@@ -18,8 +18,10 @@ class DirectoryScan implements ScanInterface
         private LoggerInterface $logger
     ) {}
 
-    public function process(string $path): void
+    public function process(string $path, ?string $hash = null): void
     {
+        assert($hash === null, 'Hash must be null for DirectoryScan event');
+
         if (!file_exists($path)) {
             $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Path does not exist!');
             return;

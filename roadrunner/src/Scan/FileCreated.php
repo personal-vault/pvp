@@ -2,14 +2,15 @@
 
 namespace App\Scan;
 
+use App\Model\File;
 use App\Repository\FileRepository;
 use InvalidArgumentException;
 use Spiral\RoadRunner\Jobs\JobsInterface;
 
 /**
- * Handles an event when a file is missing.
+ * Handles an event when a file is created.
  */
-class FileRemoved implements ScanInterface
+class FileCreated implements ScanInterface
 {
     public function __construct(
         private FileRepository $file_repository,
@@ -18,15 +19,11 @@ class FileRemoved implements ScanInterface
 
     public function process(string $path, ?string $hash = null): void
     {
-        assert($hash === null, 'Hash must be null for FileRemoved event');
+        assert($hash !== null, 'Hash must be set for FileCreated event');
+        // Check if row exists in the DB. If it does, then return.
 
-        // Update DB and set path to removed
-        $files = $this->file_repository->findByHashOrPath(null, $path);
-        if (count($files) === 0) {
-            throw new InvalidArgumentException('File not found: ' . $path);
-        }
-
-        $this->file_repository->updateRemovedByPath($path, date('Y-m-d H:i:s'));
+        // Insert row into database
+        $file = new File($hash, $path);
 
         // Dispatch analyze job
         $queue = $this->jobs->connect('consumer');
