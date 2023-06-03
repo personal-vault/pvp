@@ -5,8 +5,7 @@ namespace App\Scan;
 use App\Task\ScanTask;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
-use Spiral\RoadRunner\Jobs\Jobs;
-use Spiral\Goridge\RPC\RPC;
+use Spiral\RoadRunner\Jobs\JobsInterface;
 use Spiral\RoadRunner\Logger;
 
 /**
@@ -15,14 +14,13 @@ use Spiral\RoadRunner\Logger;
 class DirectoryScan implements ScanInterface
 {
     public function __construct(
-        private Logger $logger,
-        private RPC $rpc
+        private JobsInterface $jobs,
+        private Logger $logger
     ) {}
 
     public function process(string $path): void
     {
-        $jobs = new Jobs($this->rpc);
-        $queue = $jobs->connect('consumer');
+        $queue = $this->jobs->connect('consumer');
 
         foreach ($this->walkDirectory($path) as $file_path) {
             $this->logger->info($file_path . PHP_EOL);
