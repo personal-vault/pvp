@@ -43,7 +43,7 @@ class ServiceProvider extends AbstractServiceProvider
     public function register(): void
     {
         $rpc = RPC::create('tcp://127.0.0.1:6001');
-        $this->getContainer()->add(RPC::class, $rpc);
+        // $this->getContainer()->add(RPC::class, $rpc);
 
         $this->getContainer()->add(Logger::class)
             ->addArgument($rpc)

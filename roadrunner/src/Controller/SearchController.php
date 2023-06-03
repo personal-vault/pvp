@@ -20,9 +20,6 @@ class SearchController {
         $response = (new Response)
             ->withStatus(200)
             ->withHeader('Content-Type', 'application/json; charset=utf-8');
-            // ->withHeader('Access-Control-Allow-Origin', '*')
-            // ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
-            // ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization');
 
         $this->logger->info('Search controller called');
 
