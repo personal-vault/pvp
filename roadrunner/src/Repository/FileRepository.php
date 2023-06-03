@@ -88,6 +88,19 @@ class FileRepository
         }
     }
 
+    public function updateRemovedByPath(string $path, ?string $removed_at): void
+    {
+        $query = "
+            UPDATE files
+            SET removed_at = :removed_at
+            WHERE path = :path
+        ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':path', $path, PDO::PARAM_STR);
+        $stmt->bindParam(':removed_at', $removed_at, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
     public function findByHashOrPath(?string $hash, ?string $file_path): array
     {
         if ($hash === null && $file_path === null) {

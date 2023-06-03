@@ -24,4 +24,9 @@ class File
         $this->hash = $hash;
         $this->path = $path;
     }
+
+    public function isRemoved(): bool
+    {
+        return $this->removed_at !== null;
+    }
 }
