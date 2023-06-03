@@ -2,8 +2,6 @@
 
 namespace App\Scan;
 
-use App\Logger\NullLogger;
-use Psr\Log\LoggerInterface;
 use Test\TestCase;
 use Test\Traits\HasJobsMock;
 
@@ -21,7 +19,7 @@ class DirectoryScanTest extends TestCase
         touch($path . '/subdir-1/file-3.txt');
 
         $this->injectQueueExpectation(3);
-        $this->container->add(LoggerInterface::class, new NullLogger());
+
         $directory_scan = $this->container->get(DirectoryScan::class);
 
         $this->assertNull(
@@ -31,7 +29,6 @@ class DirectoryScanTest extends TestCase
 
     public function testItDoesNothingIfPathDoesNotExist()
     {
-        $this->container->add(LoggerInterface::class, new NullLogger());
         $directory_scan = $this->container->get(DirectoryScan::class);
 
         $this->assertNull(
@@ -44,7 +41,6 @@ class DirectoryScanTest extends TestCase
         $path = sys_get_temp_dir() . '/' . uniqid('DirectoryScanTest-');
         touch($path);
 
-        $this->container->add(LoggerInterface::class, new NullLogger());
         $directory_scan = $this->container->get(DirectoryScan::class);
 
         $this->assertNull(

@@ -2,23 +2,14 @@
 
 namespace App\Scan;
 
-use App\Logger\NullLogger;
 use App\Model\File;
 use App\Repository\FileRepository;
-use Psr\Log\LoggerInterface;
 use Test\TestCase;
 use Test\Traits\HasJobsMock;
 
 class FileRemovedTest extends TestCase
 {
     use HasJobsMock;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->container->add(LoggerInterface::class, new NullLogger());
-    }
 
     public function testItSetsDatabaseRowToRemoved(): void
     {
