@@ -40,4 +40,27 @@ class DirectoryScanTest extends TestCase
             $directory_scan->process($path)
         );
     }
+
+    public function testItDoesNothingIfPathDoesNotExist()
+    {
+        $this->container->add(LoggerInterface::class, new NullLogger());
+        $directory_scan = $this->container->get(DirectoryScan::class);
+
+        $this->assertNull(
+            $directory_scan->process(sys_get_temp_dir() . '/' . uniqid('DirectoryScanTest-'))
+        );
+    }
+
+    public function testItDoesNothingIfPathIsAFile()
+    {
+        $path = sys_get_temp_dir() . '/' . uniqid('DirectoryScanTest-');
+        touch($path);
+
+        $this->container->add(LoggerInterface::class, new NullLogger());
+        $directory_scan = $this->container->get(DirectoryScan::class);
+
+        $this->assertNull(
+            $directory_scan->process($path)
+        );
+    }
 }

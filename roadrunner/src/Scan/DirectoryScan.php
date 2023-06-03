@@ -20,6 +20,16 @@ class DirectoryScan implements ScanInterface
 
     public function process(string $path): void
     {
+        if (!file_exists($path)) {
+            $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Path does not exist!');
+            return;
+        }
+
+        if (!is_dir($path)) {
+            $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Path is not a directory!');
+            return;
+        }
+
         $queue = $this->jobs->connect('consumer');
 
         foreach ($this->walkDirectory($path) as $file_path) {
@@ -32,7 +42,11 @@ class DirectoryScan implements ScanInterface
         }
     }
 
-    private function walkDirectory($path) {
+    /**
+     * @return iterable<string>
+     */
+    private function walkDirectory(string $path): iterable
+    {
         $directory_iterator = new RecursiveDirectoryIterator($path);
         $iterator = new RecursiveIteratorIterator($directory_iterator);
 
