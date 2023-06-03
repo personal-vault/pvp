@@ -3,10 +3,10 @@
 namespace App\Scan;
 
 use App\Task\ScanTask;
+use Psr\Log\LoggerInterface;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
 use Spiral\RoadRunner\Jobs\JobsInterface;
-use Spiral\RoadRunner\Logger;
 
 /**
  * Handles an event when a directory is scanned.
@@ -15,7 +15,7 @@ class DirectoryScan implements ScanInterface
 {
     public function __construct(
         private JobsInterface $jobs,
-        private Logger $logger
+        private LoggerInterface $logger
     ) {}
 
     public function process(string $path): void

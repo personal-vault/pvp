@@ -3,10 +3,11 @@
 namespace App;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
-use RoadRunner\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Spiral\Goridge\RPC\RPC;
 use Spiral\RoadRunner\Jobs\Jobs;
 use Spiral\RoadRunner\Jobs\JobsInterface;
+use Spiral\RoadRunner\Logger;
 
 /**
  * @link https://container.thephpleague.com/4.x/service-providers/
@@ -25,6 +26,7 @@ class ServiceProvider extends AbstractServiceProvider
         $services = [
             JobsInterface::class,
             Logger::class,
+            LoggerInterface::class,
             RPC::class,
         ];
 
@@ -48,6 +50,9 @@ class ServiceProvider extends AbstractServiceProvider
         $this->getContainer()->add(Logger::class)
             ->addArgument($rpc)
             ->setShared(true);
+
+        $logger = new Logger($rpc);
+        $this->getContainer()->add(LoggerInterface::class, $logger)->setShared(true);
 
         $this->getContainer()->add(JobsInterface::class, new Jobs($rpc));
     }

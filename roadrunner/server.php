@@ -7,11 +7,11 @@ use App\ServiceProvider;
 use League\Route\Http\Exception\NotFoundException;
 use Nyholm\Psr7;
 use Nyholm\Psr7\Response;
+use Psr\Log\LoggerInterface;
 use Spiral\RoadRunner\Environment;
 use Spiral\RoadRunner\Environment\Mode;
 use Spiral\RoadRunner\Jobs\Consumer;
 use Spiral\RoadRunner\Jobs\Task\ReceivedTaskInterface;
-use RoadRunner\Logger\Logger;
 use Spiral\RoadRunner;
 
 require_once(dirname(__FILE__) . '/vendor/autoload.php');
@@ -104,7 +104,7 @@ if ($isJobsMode) {
             // Additionally, we can inform the RoadRunner that the processing
             // of the request failed.
             // Reply by the 500 Internal Server Error response
-            $container->get(Logger::class)->error((string) $e);
+            $container->get(LoggerInterface::class)->error((string) $e);
             $psr7->respond(new Response(500, [], 'Something Went Wrong: ' . (string) $e));
 
             $psr7->getWorker()->error((string) $e);

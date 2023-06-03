@@ -6,12 +6,12 @@ namespace App;
 
 use PDO;
 use PDOException;
-use RoadRunner\Logger\Logger;
+use Psr\Log\LoggerInterface;
 
 class Database {
 
     public function __construct(
-        private Logger $logger
+        private LoggerInterface $logger
     ) {}
 
     public function getPdo(): PDO

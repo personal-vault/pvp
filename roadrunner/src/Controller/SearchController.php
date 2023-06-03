@@ -7,12 +7,12 @@ namespace App\Controller;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RoadRunner\Logger\Logger;
+use Psr\Log\LoggerInterface;
 
 class SearchController {
 
     public function __construct(
-        private Logger $logger
+        private LoggerInterface $logger
     ) {}
 
     public function getMethod(ServerRequestInterface $request): ResponseInterface

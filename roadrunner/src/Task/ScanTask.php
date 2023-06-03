@@ -8,7 +8,7 @@ use InvalidArgumentException;
 use App\Repository\FileRepository;
 use App\Scan\DirectoryScan;
 use App\Scan\FileRemoved;
-use RoadRunner\Logger\Logger;
+use Psr\Log\LoggerInterface;
 
 class ScanTask
 {
@@ -18,7 +18,7 @@ class ScanTask
         private DirectoryScan $directory_scan,
         private FileRemoved $file_removed,
         private FileRepository $file_repository,
-        private Logger $logger
+        private LoggerInterface $logger
     ) {}
 
     public function setStorage(string $storage): void

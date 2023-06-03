@@ -3,7 +3,7 @@
 namespace App\Scan;
 
 use App\Logger\NullLogger;
-use Spiral\RoadRunner\Logger;
+use Psr\Log\LoggerInterface;
 use Spiral\RoadRunner\Jobs\JobsInterface;
 use Spiral\RoadRunner\Jobs\QueueInterface;
 use Spiral\RoadRunner\Jobs\Task\PreparedTaskInterface;

@@ -10,7 +10,7 @@ use App\Model\File;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
-use RoadRunner\Logger\Logger;
+use Psr\Log\LoggerInterface;
 
 class FileRepository
 {
@@ -18,7 +18,7 @@ class FileRepository
 
     public function __construct(
         private Database $database,
-        private Logger $logger
+        private LoggerInterface $logger
     ) {
         $this->pdo = $database->getPdo();
     }

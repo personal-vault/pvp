@@ -8,14 +8,14 @@ use App\Task\ScanTask;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use RoadRunner\Logger\Logger;
+use Psr\Log\LoggerInterface;
 use Spiral\RoadRunner\Jobs\JobsInterface;
 
 class ScanController {
 
     public function __construct(
         private JobsInterface $jobs,
-        private Logger $logger
+        private LoggerInterface $logger
     ) {}
 
     public function postMethod(ServerRequestInterface $request): ResponseInterface
