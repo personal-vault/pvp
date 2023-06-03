@@ -5,6 +5,7 @@ namespace App\Scan;
 use App\Model\File;
 use App\Repository\FileRepository;
 use InvalidArgumentException;
+use Psr\Log\LoggerInterface;
 use Spiral\RoadRunner\Jobs\JobsInterface;
 
 /**
@@ -14,16 +15,24 @@ class FileCreated implements ScanInterface
 {
     public function __construct(
         private FileRepository $file_repository,
-        private JobsInterface $jobs
+        private JobsInterface $jobs,
+        private LoggerInterface $logger,
     ) {}
 
     public function process(string $path, ?string $hash = null): void
     {
         assert($hash !== null, 'Hash must be set for FileCreated event');
+
         // Check if row exists in the DB. If it does, then return.
+        $files = $this->file_repository->findByHashOrPath(null, $path);
+        if (count($files) > 0) {
+            $this->logger->info(__CLASS__ . '::' . __METHOD__ . '(' . $path .') File already exists in DB!');
+            return;
+        }
 
         // Insert row into database
         $file = new File($hash, $path);
+        $this->file_repository->create($file);
 
         // Dispatch analyze job
         $queue = $this->jobs->connect('consumer');

@@ -23,4 +23,15 @@ trait HasJobsMock {
 
         $this->container->add(JobsInterface::class, $jobs);
     }
+
+    private function injectQueueUnexpectation(): void
+    {
+        $queue = $this->createMock(QueueInterface::class);
+        $jobs = $this->createMock(JobsInterface::class);
+        $jobs->expects($this->never())
+            ->method('connect')
+            ->with('consumer')
+            ->willReturn($queue);
+        $this->container->add(JobsInterface::class, $jobs);
+    }
 }

@@ -40,8 +40,8 @@ class FileCreatedTest extends TestCase
         $file_repository = $this->container->get(FileRepository::class);
         $file_repository->create($file);
 
-        // Expect analyze job to be dispatched
-        $this->injectQueueExpectation(1);
+        // Expect analyze job NOT to be dispatched
+        $this->injectQueueUnexpectation();
 
         $file_created = $this->container->get(FileCreated::class);
 
