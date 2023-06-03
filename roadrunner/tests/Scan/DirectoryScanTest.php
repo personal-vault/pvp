@@ -4,13 +4,13 @@ namespace App\Scan;
 
 use App\Logger\NullLogger;
 use Psr\Log\LoggerInterface;
-use Spiral\RoadRunner\Jobs\JobsInterface;
-use Spiral\RoadRunner\Jobs\QueueInterface;
-use Spiral\RoadRunner\Jobs\Task\PreparedTaskInterface;
 use Test\TestCase;
+use Test\Traits\HasJobsMock;
 
 class DirectoryScanTest extends TestCase
 {
+    use HasJobsMock;
+
     public function testItWalksADirectory(): void
     {
         $path = sys_get_temp_dir() . '/' . uniqid('DirectoryScanTest-');
@@ -20,19 +20,7 @@ class DirectoryScanTest extends TestCase
         mkdir($path . '/subdir-1');
         touch($path . '/subdir-1/file-3.txt');
 
-        $queue = $this->createMock(QueueInterface::class);
-        $queue->expects($this->exactly(3))
-            ->method('create')
-            ->willReturn($this->createMock(PreparedTaskInterface::class));
-        $queue->expects($this->exactly(3))
-            ->method('dispatch');
-        $jobs = $this->createMock(JobsInterface::class);
-        $jobs->expects($this->once())
-            ->method('connect')
-            ->with('consumer')
-            ->willReturn($queue);
-
-        $this->container->add(JobsInterface::class, $jobs);
+        $this->injectQueueExpectation(3);
         $this->container->add(LoggerInterface::class, new NullLogger());
         $directory_scan = $this->container->get(DirectoryScan::class);
 

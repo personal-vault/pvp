@@ -6,13 +6,13 @@ use App\Logger\NullLogger;
 use App\Model\File;
 use App\Repository\FileRepository;
 use Psr\Log\LoggerInterface;
-use Spiral\RoadRunner\Jobs\JobsInterface;
-use Spiral\RoadRunner\Jobs\QueueInterface;
-use Spiral\RoadRunner\Jobs\Task\PreparedTaskInterface;
 use Test\TestCase;
+use Test\Traits\HasJobsMock;
 
 class FileRemovedTest extends TestCase
 {
+    use HasJobsMock;
+
     public function setUp(): void
     {
         parent::setUp();
@@ -30,18 +30,7 @@ class FileRemovedTest extends TestCase
         $file_repository->create($file);
 
         // Expect analyze job to be dispatched
-        $queue = $this->createMock(QueueInterface::class);
-        $queue->expects($this->exactly(1))
-            ->method('create')
-            ->willReturn($this->createMock(PreparedTaskInterface::class));
-        $queue->expects($this->exactly(1))
-            ->method('dispatch');
-        $jobs = $this->createMock(JobsInterface::class);
-        $jobs->expects($this->once())
-            ->method('connect')
-            ->with('consumer')
-            ->willReturn($queue);
-        $this->container->add(JobsInterface::class, $jobs);
+        $this->injectQueueExpectation(1);
 
         $file_removed = $this->container->get(FileRemoved::class);
 
