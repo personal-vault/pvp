@@ -35,7 +35,7 @@ docker compose exec --workdir /var/www roadrunner /bin/bash -c "php src/scan.php
 Run the tests:
 
 ```shell
-docker compose exec --workdir /var/www roadrunner /bin/bash -c "vendor/bin/phpunit"
+docker compose exec --workdir /var/www roadrunner /bin/bash -c "vendor/bin/phpunit --testdox"
 ```
 
 ## Licensing and Attribution
