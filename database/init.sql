@@ -1,7 +1,7 @@
 CREATE TABLE files (
     id SERIAL PRIMARY KEY,
-    hash CHAR(64) NOT NULL,
-    path TEXT,
+    hash VARCHAR(64) NOT NULL,
+    path TEXT UNIQUE NOT NULL,
     filename TEXT,
     filesize BIGINT,
     mime TEXT,
@@ -12,5 +12,6 @@ CREATE TABLE files (
     scan_version INTEGER,
     scanned_at TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    removed_at TIMESTAMP
 );

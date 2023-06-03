@@ -1,8 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-declare(strict_types=1);
-
-namespace App\Producer;
+namespace App\Scan;
 
 use App\Task\ScanTask;
 use RecursiveDirectoryIterator;
@@ -11,19 +9,22 @@ use Spiral\RoadRunner\Jobs\Jobs;
 use Spiral\Goridge\RPC\RPC;
 use Spiral\RoadRunner\Logger;
 
-class Scan {
-
+/**
+ * Handles an event when a directory is scanned.
+ */
+class DirectoryScan implements ScanInterface
+{
     public function __construct(
         private Logger $logger,
         private RPC $rpc
     ) {}
 
-    public function run(string $storage_path): void
+    public function process(string $path): void
     {
         $jobs = new Jobs($this->rpc);
         $queue = $jobs->connect('consumer');
 
-        foreach ($this->walk_directory($storage_path) as $file_path) {
+        foreach ($this->walkDirectory($path) as $file_path) {
             $this->logger->info($file_path . PHP_EOL);
             $task = $queue->create(
                 ScanTask::class,
@@ -33,7 +34,7 @@ class Scan {
         }
     }
 
-    private function walk_directory($path) {
+    private function walkDirectory($path) {
         $directory_iterator = new RecursiveDirectoryIterator($path);
         $iterator = new RecursiveIteratorIterator($directory_iterator);
 

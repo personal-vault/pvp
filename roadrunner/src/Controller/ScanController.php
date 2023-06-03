@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Task\ScanFileTask;
+use App\Task\ScanTask;
 use Nyholm\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -23,7 +23,7 @@ class ScanController {
         $path = urldecode($request->getAttribute('path'));
         $queue = $this->jobs->connect('consumer');
         $task = $queue->create(
-            ScanFileTask::class,
+            ScanTask::class,
             payload: \json_encode(['filename' => $path])
         );
         $queue->dispatch($task);

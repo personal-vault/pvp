@@ -55,11 +55,13 @@ services:
     container_name: pgadmin
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@example.com}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
       PGADMIN_CONFIG_SERVER_MODE: 'False'
+      # PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
     volumes:
        - pgadmin:/var/lib/pgadmin
+       - ./database/pgadmin/servers.json:/pgadmin4/servers.json
     ports:
       - "${PGADMIN_PORT:-5050}:80"
     networks:

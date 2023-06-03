@@ -25,6 +25,7 @@ class ServiceProvider extends AbstractServiceProvider
         $services = [
             JobsInterface::class,
             Logger::class,
+            RPC::class,
         ];
 
         return in_array($id, $services);
@@ -41,9 +42,9 @@ class ServiceProvider extends AbstractServiceProvider
      */
     public function register(): void
     {
-        // $this->getContainer()->add('key', 'value');
-
         $rpc = RPC::create('tcp://127.0.0.1:6001');
+        $this->getContainer()->add(RPC::class, $rpc);
+
         $this->getContainer()->add(Logger::class)
             ->addArgument($rpc)
             ->setShared(true);

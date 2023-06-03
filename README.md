@@ -32,6 +32,12 @@ docker compose down && docker compose up --build
 docker compose exec --workdir /var/www roadrunner /bin/bash -c "php src/scan.php"
 ```
 
+Run the tests:
+
+```shell
+docker compose exec --workdir /var/www roadrunner /bin/bash -c "vendor/bin/phpunit"
+```
+
 ## Licensing and Attribution
 
 This repository is licensed under the [AGPL License].
