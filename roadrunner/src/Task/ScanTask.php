@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use App\Repository\FileRepository;
 use App\Scan\DirectoryScan;
 use App\Scan\FileCreated;
+use App\Scan\FileMoved;
 use App\Scan\FileRemoved;
 use Psr\Log\LoggerInterface;
 
@@ -18,6 +19,7 @@ class ScanTask
     public function __construct(
         private DirectoryScan $directory_scan,
         private FileCreated $file_created,
+        private FileMoved $file_moved,
         private FileRemoved $file_removed,
         private FileRepository $file_repository,
         private LoggerInterface $logger
@@ -67,9 +69,7 @@ class ScanTask
         if ($files[0]->hash === $hash) {
             if ($files[0]->path !== $path) {
                 // File Moved / Renamed
-
-                // Copy row to new path
-
+                $this->file_moved->process($path, $hash);
             }
             // Dispatch analyze job
             return;

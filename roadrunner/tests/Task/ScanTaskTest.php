@@ -2,7 +2,11 @@
 
 namespace App\Task;
 
+use App\Model\File;
+use App\Repository\FileRepository;
 use App\Scan\DirectoryScan;
+use App\Scan\FileCreated;
+use App\Scan\FileMoved;
 use App\Scan\FileRemoved;
 use InvalidArgumentException;
 use Test\TestCase;
@@ -87,5 +91,57 @@ final class ScanTaskTest extends TestCase
         );
 
         @rmdir($random_directory);
+    }
+
+    public function testItWillProcessFileCreatedIfNewFileDoesNotExistInTheDB()
+    {
+        // Create random temporary file
+        $random_file = tempnam(sys_get_temp_dir(), uniqid('pvp-')) . '.txt';
+        file_put_contents($random_file, uniqid('hello-world', true));
+
+        // Mock the FileCreated service
+        $file_created = $this->createMock(FileCreated::class);
+        $file_created->expects($this->once())
+            ->method('process')
+            ->with($random_file);
+        $this->container->add(FileCreated::class, $file_created);
+
+        $scan_file_task = $this->container->get(ScanTask::class);
+        $scan_file_task->setStorage(sys_get_temp_dir());
+
+        // The filename should be just the path+file without the sys_get_temp_dir() prefix
+        $filename = substr($random_file, strlen(sys_get_temp_dir()));
+        $this->assertNull(
+            $scan_file_task->run('id', json_encode(['filename' => $filename]))
+        );
+    }
+
+    public function testItWillProcessFileMovedIfFileNameOrLocationChanged()
+    {
+        // Create random temporary file
+        $random_file = tempnam(sys_get_temp_dir(), uniqid('pvp-'));
+        file_put_contents($random_file, uniqid('hello-world', true));
+        $hash = hash_file('sha256', $random_file);
+
+        // Create DB file with the same hash, but different path
+        $file = new File($hash, $random_file . '.tgz');
+        $file_repository = $this->container->get(FileRepository::class);
+        $file_repository->create($file);
+
+        // Mock the FileMoved service
+        $file_moved = $this->createMock(FileMoved::class);
+        $file_moved->expects($this->once())
+            ->method('process')
+            ->with($random_file);
+        $this->container->add(FileMoved::class, $file_moved);
+
+        $scan_file_task = $this->container->get(ScanTask::class);
+        $scan_file_task->setStorage(sys_get_temp_dir());
+
+        // The filename should be just the path+file without the sys_get_temp_dir() prefix
+        $filename = substr($random_file, strlen(sys_get_temp_dir()));
+        $this->assertNull(
+            $scan_file_task->run('id', json_encode(['filename' => $filename]))
+        );
     }
 }

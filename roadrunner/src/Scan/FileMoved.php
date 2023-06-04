@@ -10,7 +10,7 @@ use Spiral\RoadRunner\Jobs\JobsInterface;
 /**
  * Handles an event when a file is created.
  */
-class FileCreated implements ScanInterface
+class FileMoved implements ScanInterface
 {
     public function __construct(
         private FileRepository $file_repository,
@@ -29,10 +29,10 @@ class FileCreated implements ScanInterface
             return;
         }
 
-        // Insert row into database
-        $file = new File($hash, $path);
+        // Copy DB row with new path (and not removed)
+        // $file = new File($hash, $path);
         //TODO: add all the other fields
-        $this->file_repository->create($file);
+        // $this->file_repository->create($file);
 
         // Dispatch analyze job
         $queue = $this->jobs->connect('consumer');
