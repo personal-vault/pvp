@@ -8,7 +8,9 @@ use Psr\Log\LoggerInterface;
 use Spiral\RoadRunner\Jobs\JobsInterface;
 
 /**
- * Handles an event when a file is created.
+ * Handles an event when a file is moved.
+ *
+ * This class handles the new file path, the old file path is handled by FileRemoved.
  */
 class FileMoved implements ScanInterface
 {
@@ -20,19 +22,21 @@ class FileMoved implements ScanInterface
 
     public function process(string $path, ?string $hash = null): void
     {
-        assert($hash !== null, 'Hash must be set for FileCreated event');
+        assert($hash !== null, 'Hash must be set for FileMoved event');
 
-        // Check if row exists in the DB. If it does, then return.
-        $files = $this->file_repository->findByHashOrPath(null, $path);
-        if (count($files) > 0) {
-            $this->logger->info(__CLASS__ . '::' . __METHOD__ . '(' . $path .') File already exists in DB!');
+        // Get the database rows that have the same hash (and different location)
+        $files = $this->file_repository->findByHashOrPath($hash, null);
+
+        if (count($files) === 0) {
+            $this->logger->info(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Cannot find moved file by hash!');
             return;
         }
 
-        // Copy DB row with new path (and not removed)
-        // $file = new File($hash, $path);
-        //TODO: add all the other fields
-        // $this->file_repository->create($file);
+        $file = reset($files);
+        $file->path = $path;
+        $file->removed_at = null;
+        //TODO: update the other fields
+        $this->file_repository->create($file);
 
         // Dispatch analyze job
         $queue = $this->jobs->connect('consumer');
