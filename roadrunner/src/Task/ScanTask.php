@@ -10,6 +10,7 @@ use App\Scan\DirectoryScan;
 use App\Scan\FileCreated;
 use App\Scan\FileMoved;
 use App\Scan\FileRemoved;
+use App\Scan\FileUpdated;
 use Psr\Log\LoggerInterface;
 
 class ScanTask
@@ -22,6 +23,7 @@ class ScanTask
         private FileMoved $file_moved,
         private FileRemoved $file_removed,
         private FileRepository $file_repository,
+        private FileUpdated $file_updated,
         private LoggerInterface $logger
     ) {}
 
@@ -77,6 +79,7 @@ class ScanTask
 
         if ($files[0]->path === $path) {
             // Same file, different hash => File Updated
+            $this->file_updated->process($path, $hash);
             // Update DB row, SET removed_at = null
 
             // Dispatch analyze job

@@ -101,6 +101,41 @@ class FileRepository
         $stmt->execute();
     }
 
+    public function updateByPath(string $path, File $file): void
+    {
+        $query = "
+            UPDATE files
+            SET hash = :hash,
+                path = :path,
+                filename = :filename,
+                filesize = :filesize,
+                mime = :mime,
+                date_created = :date_created,
+                gps_lat = :gps_lat,
+                gps_lon = :gps_lon,
+                gps_alt = :gps_alt,
+                scanned_at = :scanned_at,
+                removed_at = :removed_at,
+                updated_at = NOW()
+            WHERE path = :path
+        ";
+        $stmt = $this->pdo->prepare($query);
+        $stmt->bindParam(':path', $path, PDO::PARAM_STR);
+        $stmt->bindParam(':hash', $file->hash, PDO::PARAM_STR);
+        $stmt->bindParam(':filename', $file->filename, PDO::PARAM_STR);
+        $stmt->bindParam(':filesize', $file->filesize, PDO::PARAM_INT);
+        $stmt->bindParam(':mime', $file->mime, PDO::PARAM_STR);
+        $stmt->bindParam(':date_created', $file->date_created, PDO::PARAM_STR);
+        $stmt->bindParam(':gps_lat', $file->gps_lat, PDO::PARAM_STR);
+        $stmt->bindParam(':gps_lon', $file->gps_lon, PDO::PARAM_STR);
+        $stmt->bindParam(':gps_alt', $file->gps_alt, PDO::PARAM_STR);
+        $stmt->bindParam(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
+        $stmt->bindParam(':removed_at', $removed_at, PDO::PARAM_STR);
+        $stmt->execute();
+    }
+
+
+
     public function findByHashOrPath(?string $hash, ?string $file_path): array
     {
         if ($hash === null && $file_path === null) {

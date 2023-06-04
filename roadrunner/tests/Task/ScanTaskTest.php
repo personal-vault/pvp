@@ -8,6 +8,7 @@ use App\Scan\DirectoryScan;
 use App\Scan\FileCreated;
 use App\Scan\FileMoved;
 use App\Scan\FileRemoved;
+use App\Scan\FileUpdated;
 use InvalidArgumentException;
 use Test\TestCase;
 
@@ -134,6 +135,34 @@ final class ScanTaskTest extends TestCase
             ->method('process')
             ->with($random_file);
         $this->container->add(FileMoved::class, $file_moved);
+
+        $scan_file_task = $this->container->get(ScanTask::class);
+        $scan_file_task->setStorage(sys_get_temp_dir());
+
+        // The filename should be just the path+file without the sys_get_temp_dir() prefix
+        $filename = substr($random_file, strlen(sys_get_temp_dir()));
+        $this->assertNull(
+            $scan_file_task->run('id', json_encode(['filename' => $filename]))
+        );
+    }
+
+    public function testItWillProcessFileUpdatedIfPathIsTheSameButHashChanged()
+    {
+        // Create random temporary file
+        $random_file = tempnam(sys_get_temp_dir(), uniqid('pvp-'));
+        file_put_contents($random_file, uniqid('hello-world', true));
+
+        // Create DB file with a different hash
+        $file = new File(uniqid('hash-'), $random_file);
+        $file_repository = $this->container->get(FileRepository::class);
+        $file_repository->create($file);
+
+        // Mock the FileMoved service
+        $file_updated = $this->createMock(FileUpdated::class);
+        $file_updated->expects($this->once())
+            ->method('process')
+            ->with($random_file);
+        $this->container->add(FileUpdated::class, $file_updated);
 
         $scan_file_task = $this->container->get(ScanTask::class);
         $scan_file_task->setStorage(sys_get_temp_dir());
