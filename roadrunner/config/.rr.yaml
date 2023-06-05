@@ -58,7 +58,7 @@ metrics:
 # Logging settings (docs: https://roadrunner.dev/docs/plugins-logger/2.x/en)
 logs:
   mode: development
-  level: debug
+  level: info
   encoding: console
   file_logger_options:
     log_output: "/var/www/logs/app.log"

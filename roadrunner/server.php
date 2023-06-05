@@ -32,13 +32,14 @@ $isJobsMode = $env->getMode() === Mode::MODE_JOBS;
 
 if ($isJobsMode) {
     $consumer = new Consumer();
-
+    $logger = $container->get(LoggerInterface::class);
     $count = 0;
     /** @var ReceivedTaskInterface $task */
     while ($task = $consumer->waitTask()) {
         $shouldBeRestarted = false;
         $action = $container->get($task->getName());
         try {
+            $logger->info('Running task ' . $task->getName() . ' with payload ' . json_encode($task->getPayload()));
             $action->run($task->getId(), $task->getPayload());
             $task->complete();
         } catch (\Throwable $e) {

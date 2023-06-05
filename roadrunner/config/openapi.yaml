@@ -43,7 +43,7 @@ paths:
       responses:
         200:
           description: System initialization started successfully.
-  /scan/{path}:
+  /scan:
     post:
       summary: Create `scan` job
       operationId: scan
@@ -51,8 +51,17 @@ paths:
         Scans the given path, calculating the checksum and basic file
         information. If it's a folder, it triggers scan jobs for all the files
         in the folder.
-      parameters:
-        - $ref: '#/components/parameters/Path'
+      requestBody:
+        description: Receives the path to the folder or file to be scanned.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  example: /some-folder/file.txt
       responses:
         200:
           description: OK

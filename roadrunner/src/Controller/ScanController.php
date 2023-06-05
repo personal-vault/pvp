@@ -20,7 +20,11 @@ class ScanController {
 
     public function postMethod(ServerRequestInterface $request): ResponseInterface
     {
-        $path = urldecode($request->getAttribute('path'));
+        $attributes = $request->getParsedBody();
+        if (!isset($attributes['path'])) {
+            throw new \Exception('Path not set');
+        }
+        $path = $attributes['path'];
         $queue = $this->jobs->connect('consumer');
         $task = $queue->create(
             ScanTask::class,

@@ -16,8 +16,8 @@ final class ScanControllerTest extends TestCase
 
         $controller = $this->container->get(ScanController::class);
 
-        $request = new ServerRequest('POST', '/scan/%2Frandom');
-        $response = $controller->postMethod($request->withAttribute('path', '/random'));
+        $request = new ServerRequest('POST', '/scan');
+        $response = $controller->postMethod($request->withParsedBody(['path' => '/random']));
 
         $this->assertSame('{"path":"\/random"}', (string) $response->getBody());
     }

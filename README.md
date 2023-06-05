@@ -38,6 +38,12 @@ Run the tests:
 docker compose exec --workdir /var/www roadrunner /bin/bash -c "vendor/bin/phpunit --testdox"
 ```
 
+Watch and send:
+
+```
+fswatch -0 --event Created --event Updated --event Renamed --event Removed ./vault | xargs -0 -n 1 -I {} ./path-converter.sh {}
+```
+
 ## Licensing and Attribution
 
 This repository is licensed under the [AGPL License].

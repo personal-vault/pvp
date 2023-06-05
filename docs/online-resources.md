@@ -25,6 +25,7 @@ nav_order: 100
     - [Retrieval from LangChain](https://blog.langchain.dev/retrieval/)
     - [GPT-4 & LangChain Tutorial: How to Chat With A 56-Page PDF Document (w/Pinecone)](https://www.youtube.com/watch?v=ih9PBGVVOO4) via [GPT-4 & LangChain](https://github.com/mayooear/gpt4-pdf-chatbot-langchain)
     - [how I use AI (ChatGPT) to improve my academic research](https://twitter.com/Artifexx/status/1639451801434083328)
+    - [localGPT](https://github.com/PromtEngineer/localGPT) with local document Vector embeddings
 - Libraries
     - [github.com/amasad/eHistory](https://github.com/amasad/eHistory)
     - [github.com/davidmyersdev/ink-mde](https://github.com/davidmyersdev/ink-mde)

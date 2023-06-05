@@ -4,6 +4,8 @@ namespace App\Scan;
 
 use App\Model\File;
 use App\Repository\FileRepository;
+use App\Task\AnalyzeTask;
+use InvalidArgumentException;
 use Psr\Log\LoggerInterface;
 use Spiral\RoadRunner\Jobs\JobsInterface;
 

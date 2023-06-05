@@ -17,6 +17,7 @@ class SearchController {
 
     public function getMethod(ServerRequestInterface $request): ResponseInterface
     {
+        // $path = urldecode($request->getAttribute('path'));
         $response = (new Response)
             ->withStatus(200)
             ->withHeader('Content-Type', 'application/json; charset=utf-8');

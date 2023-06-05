@@ -13,10 +13,8 @@ use App\Scan\FileRemoved;
 use App\Scan\FileUpdated;
 use Psr\Log\LoggerInterface;
 
-class ScanTask
+class ScanTask implements TaskInterface
 {
-    private string $storage = '/vault';
-
     public function __construct(
         private DirectoryScan $directory_scan,
         private FileCreated $file_created,
@@ -27,22 +25,11 @@ class ScanTask
         private LoggerInterface $logger
     ) {}
 
-    public function setStorage(string $storage): void
-    {
-        if (!file_exists($storage)) {
-            throw new InvalidArgumentException('Invalid storage path: ' . $storage);
-        }
-        if (!is_dir($storage)) {
-            throw new InvalidArgumentException('Invalid storage path: ' . $storage);
-        }
-        $this->storage = $storage;
-    }
-
     public function run(string $id, string $payload): void
     {
         $settings = json_decode($payload);
         assert($settings->filename !== null && is_string($settings->filename));
-        $path = $this->storage . $settings->filename;
+        $path = $settings->filename;
 
         // See if file is missing (has been moved or deleted)
         if (file_exists($path) === false) {

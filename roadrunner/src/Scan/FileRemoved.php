@@ -3,6 +3,7 @@
 namespace App\Scan;
 
 use App\Repository\FileRepository;
+use App\Task\AnalyzeTask;
 use InvalidArgumentException;
 use Spiral\RoadRunner\Jobs\JobsInterface;
 
@@ -23,7 +24,7 @@ class FileRemoved implements ScanInterface
         // Update DB and set path to removed
         $files = $this->file_repository->findByHashOrPath(null, $path);
         if (count($files) === 0) {
-            throw new InvalidArgumentException('File not found: ' . $path);
+            throw new InvalidArgumentException('File not found in DB: ' . $path);
         }
 
         $this->file_repository->updateRemovedByPath($path, date('Y-m-d H:i:s'));

@@ -14,26 +14,6 @@ use Test\TestCase;
 
 final class ScanTaskTest extends TestCase
 {
-    public function testItThrowsIfSetStorageToAnInvalidPath()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid storage path: /inexisting-directory');
-
-        $scan_file_task = $this->container->get(ScanTask::class);
-        $scan_file_task->setStorage('/inexisting-directory');
-    }
-
-    public function testItThrowsIfSetStorageToAFileInsteadOfDirectory()
-    {
-        $temporary_file = tempnam(sys_get_temp_dir(), uniqid('pvp-'));
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid storage path: ' . $temporary_file);
-        $scan_file_task = $this->container->get(ScanTask::class);
-
-        $scan_file_task->setStorage($temporary_file);
-    }
-
-
     public function testItWillProcessFileRemovedScanIfFileDoesNotExist()
     {
         $file_removed = $this->createMock(FileRemoved::class);
@@ -46,7 +26,7 @@ final class ScanTaskTest extends TestCase
         $scan_file_task = $this->container->get(ScanTask::class);
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => '/some-inexisting-file']))
+            $scan_file_task->run('id', json_encode(['filename' => '/vault/some-inexisting-file']))
         );
     }
 
@@ -63,10 +43,9 @@ final class ScanTaskTest extends TestCase
         $this->container->add(FileRemoved::class, $file_removed);
 
         $scan_file_task = $this->container->get(ScanTask::class);
-        $scan_file_task->setStorage('/tmp');
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => '/random-directory']))
+            $scan_file_task->run('id', json_encode(['filename' => $random_directory]))
         );
 
         @rmdir($random_directory);
@@ -85,10 +64,9 @@ final class ScanTaskTest extends TestCase
         $this->container->add(DirectoryScan::class, $directory_scan);
 
         $scan_file_task = $this->container->get(ScanTask::class);
-        $scan_file_task->setStorage('/tmp');
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => '/random-directory']))
+            $scan_file_task->run('id', json_encode(['filename' => $random_directory]))
         );
 
         @rmdir($random_directory);
@@ -108,12 +86,9 @@ final class ScanTaskTest extends TestCase
         $this->container->add(FileCreated::class, $file_created);
 
         $scan_file_task = $this->container->get(ScanTask::class);
-        $scan_file_task->setStorage(sys_get_temp_dir());
 
-        // The filename should be just the path+file without the sys_get_temp_dir() prefix
-        $filename = substr($random_file, strlen(sys_get_temp_dir()));
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $filename]))
+            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
         );
     }
 
@@ -137,12 +112,8 @@ final class ScanTaskTest extends TestCase
         $this->container->add(FileMoved::class, $file_moved);
 
         $scan_file_task = $this->container->get(ScanTask::class);
-        $scan_file_task->setStorage(sys_get_temp_dir());
-
-        // The filename should be just the path+file without the sys_get_temp_dir() prefix
-        $filename = substr($random_file, strlen(sys_get_temp_dir()));
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $filename]))
+            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
         );
     }
 
@@ -165,12 +136,8 @@ final class ScanTaskTest extends TestCase
         $this->container->add(FileUpdated::class, $file_updated);
 
         $scan_file_task = $this->container->get(ScanTask::class);
-        $scan_file_task->setStorage(sys_get_temp_dir());
-
-        // The filename should be just the path+file without the sys_get_temp_dir() prefix
-        $filename = substr($random_file, strlen(sys_get_temp_dir()));
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $filename]))
+            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
         );
     }
 }
