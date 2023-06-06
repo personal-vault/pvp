@@ -18,7 +18,7 @@ while ! nc -z $host $port; do
 done
 
 echo "Port $port is available. Continuing."
-# Continue your script here
+sleep 3
 
 source .env
 

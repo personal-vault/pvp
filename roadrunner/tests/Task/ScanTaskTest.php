@@ -9,7 +9,6 @@ use App\Scan\FileCreated;
 use App\Scan\FileMoved;
 use App\Scan\FileRemoved;
 use App\Scan\FileUpdated;
-use InvalidArgumentException;
 use Test\TestCase;
 
 final class ScanTaskTest extends TestCase
