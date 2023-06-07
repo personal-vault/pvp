@@ -3,6 +3,7 @@
 namespace App\Scan;
 
 use App\Model\File;
+use App\Parser\Parser;
 use App\Repository\FileRepository;
 use App\Task\AnalyzeTask;
 use Psr\Log\LoggerInterface;
@@ -17,6 +18,7 @@ class FileCreated implements ScanInterface
         private FileRepository $file_repository,
         private JobsInterface $jobs,
         private LoggerInterface $logger,
+        private Parser $parser
     ) {}
 
     public function process(string $path, ?string $hash = null): void
@@ -26,13 +28,20 @@ class FileCreated implements ScanInterface
         // Check if row exists in the DB. If it does, then return.
         $files = $this->file_repository->findByHashOrPath(null, $path);
         if (count($files) > 0) {
-            $this->logger->info(__CLASS__ . '::' . __METHOD__ . '(' . $path .') File already exists in DB!');
+            $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') File already exists in DB!');
             return;
         }
 
-        // Insert row into database
-        $file = new File($hash, $path);
-        //TODO: add all the other fields
+        if (!file_exists($path)) {
+            $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') File does not exist on storage!');
+            return;
+        }
+
+        // Parse file
+        $file = $this->parser->parse($path, $hash);
+        $file->scanned_at = date('Y-m-d H:i:s');
+        $file->scan_version = self::VERSION;
+        // Insert into DB
         $this->file_repository->create($file);
 
         // Dispatch analyze job

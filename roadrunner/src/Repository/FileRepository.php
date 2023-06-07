@@ -65,20 +65,23 @@ class FileRepository
     {
         try {
             $query = "
-                INSERT INTO files (hash, path, filename, filesize, mime, date_created, gps_lat, gps_lon, gps_alt, scanned_at, created_at, updated_at, removed_at)
-                VALUES (:hash, :path, :filename, :filesize, :mime, :date_created, :gps_lat, :gps_lon, :gps_alt, :scanned_at, NOW(), NOW(), NULL)
+                INSERT INTO files (hash, path, filename, filesize, mime, date_created, gps_lat, gps_lon, gps_alt, scanned_at, scan_version, created_at, updated_at, removed_at)
+                VALUES (:hash, :path, :filename, :filesize, :mime, :date_created, :gps_lat, :gps_lon, :gps_alt, :scanned_at, :scan_version, NOW(), NOW(), NULL)
             ";
             $stmt = $this->pdo->prepare($query);
-            $stmt->bindParam(':hash', $file->hash, PDO::PARAM_STR);
-            $stmt->bindParam(':path', $file->path, PDO::PARAM_STR);
-            $stmt->bindParam(':filename', $file->filename, PDO::PARAM_STR);
-            $stmt->bindParam(':filesize', $file->filesize, PDO::PARAM_INT);
-            $stmt->bindParam(':mime', $file->mime, PDO::PARAM_STR);
-            $stmt->bindParam(':date_created', $file->date_created, PDO::PARAM_STR);
-            $stmt->bindParam(':gps_lat', $file->gps_lat, PDO::PARAM_STR);
-            $stmt->bindParam(':gps_lon', $file->gps_lon, PDO::PARAM_STR);
-            $stmt->bindParam(':gps_alt', $file->gps_alt, PDO::PARAM_STR);
-            $stmt->bindParam(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
+            // don't use `bindParam`
+            // because https://www.php.net/manual/en/pdostatement.bindparam.php#94711
+            $stmt->bindValue(':hash', $file->hash, PDO::PARAM_STR);
+            $stmt->bindValue(':path', $file->path, PDO::PARAM_STR);
+            $stmt->bindValue(':filename', $file->filename, PDO::PARAM_STR);
+            $stmt->bindValue(':filesize', (int) $file->filesize, PDO::PARAM_INT);
+            $stmt->bindValue(':mime', $file->mime, PDO::PARAM_STR);
+            $stmt->bindValue(':date_created', $file->date_created, PDO::PARAM_STR);
+            $stmt->bindValue(':gps_lat', $file->gps_lat, PDO::PARAM_STR);
+            $stmt->bindValue(':gps_lon', $file->gps_lon, PDO::PARAM_STR);
+            $stmt->bindValue(':gps_alt', $file->gps_alt, PDO::PARAM_STR);
+            $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
+            $stmt->bindValue(':scan_version', $file->scan_version, PDO::PARAM_INT);
             $stmt->execute();
         } catch (PDOException $e) {
             if ((int) $e->getCode() === 23505) { // unique_violation

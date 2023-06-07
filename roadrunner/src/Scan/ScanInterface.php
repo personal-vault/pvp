@@ -9,5 +9,7 @@ use InvalidArgumentException;
  */
 interface ScanInterface
 {
+    public const VERSION = 1;
+
     public function process(string $path, ?string $hash = null): void;
 }

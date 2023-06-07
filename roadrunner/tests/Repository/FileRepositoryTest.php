@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Database;
 use App\Exception\FilePathAlreadyExistsException;
 use App\Model\File;
-use App\Scan\MissingFile;
 use InvalidArgumentException;
 use PDO;
 use Test\TestCase;
@@ -23,6 +22,14 @@ final class FileRepositoryTest extends TestCase
     public function testItCreatesAFileRow(): void
     {
         $file = new File(uniqid('hash-'), uniqid('/file-'));
+        $file->filename = uniqid('filename-');
+        $file->filesize = (int)rand(1, 1000);
+        $file->mime = uniqid('mime-');
+        $file->scanned_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $file->created_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $file->updated_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
+        $file->removed_at = null;
+        $file->scan_version = rand(1, 1000);
         $this->file_repository->create($file);
 
         $database = $this->container->get(Database::class);
@@ -36,10 +43,11 @@ final class FileRepositoryTest extends TestCase
         $this->assertSame($file->hash, $result['hash']);
         $this->assertSame($file->path, $result['path']);
         $this->assertSame($file->filename, $result['filename']);
-        $this->assertSame($file->filesize, $result['filesize']);
+        $this->assertSame($file->filesize, (int) $result['filesize']);
         $this->assertSame($file->mime, $result['mime']);
+        $this->assertSame($file->scan_version, (int) $result['scan_version']);
 
-        $this->assertNull($result['scanned_at']);
+        $this->assertNotEmpty($result['scanned_at']);
         $this->assertNotEmpty($result['created_at']);
         $this->assertNotEmpty($result['updated_at']);
         $this->assertNull($result['removed_at']);

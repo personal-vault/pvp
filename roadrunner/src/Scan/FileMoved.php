@@ -36,7 +36,6 @@ class FileMoved implements ScanInterface
         $file = reset($files);
         $file->path = $path;
         $file->removed_at = null;
-        //TODO: update the other fields
         $this->file_repository->create($file);
 
         // Dispatch analyze job

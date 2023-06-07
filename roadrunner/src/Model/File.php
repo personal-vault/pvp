@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Model;
 
@@ -11,10 +13,10 @@ class File
     public ?int $filesize = null;
     public ?string $mime = null;
     public ?string $date_created = null;
-    public ?string $gps_lat = null;
-    public ?string $gps_lon = null;
-    public ?string $gps_alt = null;
-    public ?string $scan_version = null;
+    public ?float $gps_lat = null;
+    public ?float $gps_lon = null;
+    public ?float $gps_alt = null;
+    public int $scan_version = 0;
     public ?string $scanned_at = null;
     public string $created_at;
     public string $updated_at;

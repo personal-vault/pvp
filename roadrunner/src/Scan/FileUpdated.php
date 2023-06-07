@@ -3,6 +3,7 @@
 namespace App\Scan;
 
 use App\Model\File;
+use App\Parser\Parser;
 use App\Repository\FileRepository;
 use App\Task\AnalyzeTask;
 use InvalidArgumentException;
@@ -20,6 +21,7 @@ class FileUpdated implements ScanInterface
         private FileRepository $file_repository,
         private JobsInterface $jobs,
         private LoggerInterface $logger,
+        private Parser $parser
     ) {}
 
     public function process(string $path, ?string $hash = null): void
@@ -34,11 +36,24 @@ class FileUpdated implements ScanInterface
             return;
         }
 
-        // Update DB row, SET removed_at = null
         $file = reset($files);
+        // Re-parse the file
+        $new_file = $this->parser->parse($path, $hash);
+        // Set the new hash
         $file->hash = $hash;
+        // Set the new parsed attributes
+        $file->filesize = $new_file->filesize;
+        $file->mime = $new_file->mime;
+        $file->date_created = $new_file->date_created;
+        $file->gps_lat = $new_file->gps_lat;
+        $file->gps_lon = $new_file->gps_lon;
+        $file->gps_alt = $new_file->gps_alt;
+        // File is no longer removed
         $file->removed_at = null;
-        //TODO: update the other fields
+        // Set scan changes
+        $file->scanned_at = date('Y-m-d H:i:s');
+        $file->scan_version = self::VERSION;
+        // Update File in DB
         $this->file_repository->updateByPath($path, $file);
 
         // Dispatch analyze job

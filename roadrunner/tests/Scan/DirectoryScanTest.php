@@ -9,14 +9,16 @@ class DirectoryScanTest extends TestCase
 {
     use HasJobsMock;
 
-    public function testItWalksADirectory(): void
+    public function testItWalksADirectoryIgnoringDotFiles(): void
     {
         $path = sys_get_temp_dir() . '/' . uniqid('DirectoryScanTest-');
         mkdir($path, 0777, true);
         touch($path . '/file-1.txt');
         touch($path . '/file-2.txt');
+        touch($path . '/.dotfile-1');
         mkdir($path . '/subdir-1');
         touch($path . '/subdir-1/file-3.txt');
+        touch($path . '/subdir-1/.dotfile-2');
 
         $this->injectQueueExpectation(3);
 

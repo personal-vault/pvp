@@ -13,7 +13,9 @@ class FileCreatedTest extends TestCase
 
     public function testItCreatesADatabaseRow(): void
     {
-        $path = uniqid('/vault/file-path-') . '.txt';
+        $path = tempnam(sys_get_temp_dir(), 'pvp-');
+        file_put_contents($path, uniqid('file-content-'));
+        $hash = hash_file('sha256', $path);
         /** @var FileRepository::class */
         $file_repository = $this->container->get(FileRepository::class);
         // Expect analyze job to be dispatched
@@ -22,7 +24,7 @@ class FileCreatedTest extends TestCase
         $file_created = $this->container->get(FileCreated::class);
 
         $this->assertNull(
-            $file_created->process($path, uniqid('hash-'))
+            $file_created->process($path, $hash)
         );
 
         // Check that the file exists in the DB
@@ -34,7 +36,7 @@ class FileCreatedTest extends TestCase
     public function testItSkipsCreatingRowIfAlreadyExists(): void
     {
         // Create a file in the database only
-        $path = uniqid('/vault/file-path-') . '.txt';
+        $path = tempnam(sys_get_temp_dir(), 'pvp-');
         $file = new File(uniqid('hash'), $path);
         /** @var FileRepository::class */
         $file_repository = $this->container->get(FileRepository::class);

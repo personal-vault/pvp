@@ -14,7 +14,7 @@ class FileRecreatedTest extends TestCase
     public function testItSetsDatabaseRowToNonRemovedFile(): void
     {
         // Create a file in the database only
-        $path = uniqid('/vault/file-path-') . '.txt';
+        $path = tempnam(sys_get_temp_dir(), 'pvp-');
         file_put_contents($path, uniqid('file-contents-', true));
         $hash = hash_file('sha256', $path);
         $file = new File($hash, $path);

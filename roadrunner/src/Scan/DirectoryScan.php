@@ -13,6 +13,13 @@ use Spiral\RoadRunner\Jobs\JobsInterface;
  */
 class DirectoryScan implements ScanInterface
 {
+    /**
+     * Everything that starts with these is ignored, including folders!
+     */
+    private const IGNORED_PREFIXES = [
+        '.'
+    ];
+
     public function __construct(
         private JobsInterface $jobs,
         private LoggerInterface $logger
@@ -35,6 +42,9 @@ class DirectoryScan implements ScanInterface
         $queue = $this->jobs->connect('consumer');
 
         foreach ($this->walkDirectory($path) as $file_path) {
+            if (str_starts_with(basename($file_path), ...self::IGNORED_PREFIXES)) {
+                continue;
+            }
             $this->logger->info($file_path . PHP_EOL);
             $task = $queue->create(
                 ScanTask::class,

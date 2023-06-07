@@ -14,7 +14,7 @@ class FileUpdatedTest extends TestCase
     public function testItUpdatesTheDatasbaseWithTheNewChecksum(): void
     {
         // Create a file in the database only
-        $path = uniqid('/vault/file-path-', true);
+        $path = tempnam(sys_get_temp_dir(), 'pvp-');
         file_put_contents($path, 'some content ' . uniqid('content-', true));
         $hash = hash_file('sha256', $path);
         $file = new File(uniqid('hash-'), $path);

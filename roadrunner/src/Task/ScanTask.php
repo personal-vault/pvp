@@ -71,7 +71,7 @@ class ScanTask implements TaskInterface
                 $this->file_moved->process($path, $hash);
                 return;
             }
-            // Dispatch analyze job
+            // File re-added
             $this->logger->info('ScanTask: Processing re-created file ' . $path);
             $this->file_recreated->process($path, $hash);
             return;
@@ -81,9 +81,6 @@ class ScanTask implements TaskInterface
             // Same file, different hash => File Updated
             $this->logger->info('ScanTask: Processing updated file ' . $path);
             $this->file_updated->process($path, $hash);
-            // Update DB row, SET removed_at = null
-
-            // Dispatch analyze job
         }
 
         $this->logger->warning('ScanTask: No action taken for file ' . $path);
@@ -110,16 +107,5 @@ class ScanTask implements TaskInterface
             throw new InvalidArgumentException('Invalid file path: ' . $path);
         }
         return explode(' ', $output[0])[0];
-    }
-
-    private function extract_attributes($path): array
-    {
-        $output = '';
-        $exit_code = null;
-        exec('exiftool -j ' . escapeshellarg($path), $output, $exit_code);
-        if ($exit_code !== 0) {
-            throw new InvalidArgumentException('Invalid file path: ' . $path);
-        }
-        return json_decode(implode("\n", $output));
     }
 }
