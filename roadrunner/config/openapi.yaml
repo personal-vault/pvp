@@ -1,0 +1,155 @@
+openapi: 3.0.2
+info:
+  title: Memorelia API
+  description: |-
+    This is the Memorelia API specification, used by all clients that want to interact
+    with the application.
+
+    Learn more about Memorelia:
+    - [Memorelia (PVP) Documentation](https://dlucian.github.io/pvp/)
+    - [Discussions Forum](https://github.com/dlucian/pvp/discussions)
+    - [GitHub Repository](https://github.com/dlucian/pvp)
+  termsOfService: http://swagger.io/terms/
+  contact:
+    email: dlucian@gmail.com
+  license:
+    name: GNU Affero General Public License (AGPL)
+    url: https://www.gnu.org/licenses/agpl-3.0.en.html
+  version: "3"
+externalDocs:
+  description: Memorelia (PVP) Documentation
+  url: https://dlucian.github.io/pvp/
+servers:
+  - url: http://localhost:7030/
+paths:
+  /init:
+    post:
+      summary: Initialize system
+      operationId: init
+      description: |
+        Initialize the system. This does a quick sweep to check if files are
+        scanned, and that the database contains up-to-date information. If it
+        doesn't, then it triggers a full system scan. Send the `truncate` parameter
+        to force it to truncate the database and start a scan from scratch.
+
+        Keep in mind that this command does not alter anything in your storage
+        folder.
+      requestBody:
+        description: Initialize the system
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Init'
+      responses:
+        200:
+          description: System initialization started successfully.
+  /scan:
+    post:
+      summary: Create `scan` job
+      operationId: scan
+      description: |
+        Scans the given path, calculating the checksum and basic file
+        information. If it's a folder, it triggers scan jobs for all the files
+        in the folder.
+      requestBody:
+        description: Receives the path to the folder or file to be scanned.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                path:
+                  type: string
+                  example: /some-folder/file.txt
+      responses:
+        200:
+          description: OK
+  /parse/{path}:
+    post:
+      summary: Create `parse` job
+      operationId: parse
+      parameters:
+        - $ref: '#/components/parameters/Path'
+      responses:
+        200:
+          description: OK
+  /index/{path}:
+    post:
+      summary: Create `index` job
+      operationId: index
+      parameters:
+        - $ref: '#/components/parameters/Path'
+      responses:
+        200:
+          description: OK
+  /embed/{path}:
+    post:
+      summary: Create `embed` job
+      operationId: embed
+      parameters:
+        - $ref: '#/components/parameters/Path'
+      responses:
+        200:
+          description: OK
+  /search:
+    get:
+      summary: Search files
+      operationId: search
+      parameters:
+        - in: query
+          name: after
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: before
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: lat
+          schema:
+            type: number
+            format: float
+        - in: query
+          name: lon
+          schema:
+            type: number
+            format: float
+        - in: query
+          name: rad_km
+          schema:
+            type: number
+            format: float
+        - in: query
+          name: mime
+          schema:
+            type: string
+        - in: query
+          name: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: OK
+
+components:
+  schemas:
+    Init:
+      type: object
+      properties:
+        truncate:
+          type: boolean
+          example: true
+          description: |
+            If true, will delete all database data before
+            re-scanning everything in the storage volume.
+  parameters:
+    Path:
+      in: path
+      name: path
+      description: URL-encoded path.
+      required: true
+      schema:
+        type: string

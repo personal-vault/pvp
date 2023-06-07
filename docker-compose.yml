@@ -1,0 +1,86 @@
+version: "3.9"
+
+services:
+
+  roadrunner:
+    container_name: roadrunner
+    build:
+      context: ./roadrunner
+    restart: unless-stopped
+    environment:
+      - VAULT_PATH=${VAULT_PATH}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - internal
+    volumes:
+      - type: bind
+        source: ${HOST_VAULT_PATH}
+        target: ${VAULT_PATH}
+      - ./roadrunner:/var/www
+      - ./roadrunner/config:/etc/roadrunner
+    depends_on:
+      - database
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - '7020:6001'
+      - '7030:8080'
+
+  database:
+    container_name: postgres
+    build:
+      context: ./database
+    restart: unless-stopped
+    user: postgres
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-admin@example.com}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      # PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: 'False'
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+       - ./database/pgadmin/servers.json:/pgadmin4/servers.json
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    networks:
+      - internal
+    restart: unless-stopped
+
+  # viewer:
+  #   build:
+  #     context: ./viewer
+  #   ports:
+  #     - "80:80"
+  #   depends_on:
+  #     - database
+
+networks:
+  internal:
+    driver: bridge
+
+volumes:
+  postgres:
+  pgadmin:
+  storage_data:

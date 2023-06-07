@@ -9,5 +9,13 @@ _site/
 .bundle/
 vendor/
 
+# Ignore cache files
+*.cache
+
 # Ignore useless files
 .DS_Store
+vault/
+.env
+app.log
+image.jpg
+*.log.gz

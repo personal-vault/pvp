@@ -1,0 +1,93 @@
+# Sample configuration:
+# https://github.com/roadrunner-server/roadrunner/blob/master/.rr.yaml
+
+version: '3'
+rpc:
+    listen: 'tcp://:6001'
+server:
+    command: 'php /var/www/server.php'
+    relay: "tcp://127.0.0.1:7000"
+    env:
+     - XDEBUG_SESSION: 1
+http:
+    address: '0.0.0.0:8080'
+    middleware:
+        - gzip
+        - static
+        - headers
+    static:
+        dir: /var/www/public
+        forbid:
+            - .php
+            - .htaccess
+    headers:
+        cors:
+            allowed_origin: "*"
+            allowed_headers: "*"
+            allowed_methods: "GET,POST,PUT,DELETE"
+            allow_credentials: true
+            exposed_headers: "Cache-Control,Content-Language,Content-Type,Expires,Last-Modified,Pragma"
+            max_age: 600
+        response:
+            X-Powered-By: "Memorelia/RoadRunner"
+    pool:
+        debug: true
+        num_workers: 1
+        supervisor:
+            max_worker_memory: 100
+jobs:
+    pool:
+        num_workers: 2
+        max_worker_memory: 100
+    consume: [ "consumer" ]
+    pipelines:
+      consumer:
+        driver: memory
+        config:
+          priority: 10
+          prefetch: 10
+kv:
+    local:
+        driver: memory
+        config:
+            interval: 60
+
+metrics:
+    address: '127.0.0.1:2112'
+
+# Logging settings (docs: https://roadrunner.dev/docs/plugins-logger/2.x/en)
+logs:
+  mode: development
+  level: info
+  encoding: console
+  file_logger_options:
+    log_output: "/var/www/logs/app.log"
+    max_size: 10
+    max_age: 24
+    max_backups: 10
+    compress: true
+  # channels:
+  #   http:
+  #     mode: development
+  #     level: warning
+  #     encoding: console
+  #     output: stdout
+  #     err_output: stderr
+  #   server:
+  #     mode: development
+  #     level: warning
+  #     encoding: console
+  #     output: stdout
+  #     err_output: stdout
+  #   rpc:
+  #     mode: development
+  #     level: warning
+  #     encoding: console
+  #     output: stderr
+  #     err_output: stdout
+  #   jpbs:
+  #     mode: development
+  #     level: warning
+  #     encoding: console
+  #     output: stderr
+  #     err_output: stdout
