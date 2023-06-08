@@ -34,11 +34,11 @@ class FileUpdatedTest extends TestCase
         );
 
         // Check that the file was set to removed
-        $files = $file_repository->findByHashOrPath(null, $path);
-        $this->assertCount(1, $files);
+        $file = $file_repository->findByPath($path);
+        $this->assertNotNull($file);
         // Updated hash
-        $this->assertSame($hash, $files[0]->hash);
-        $this->assertFalse($files[0]->isRemoved());
+        $this->assertSame($hash, $file->hash);
+        $this->assertFalse($file->isRemoved());
     }
 
     public function testItThrowsIfHashIsNull(): void

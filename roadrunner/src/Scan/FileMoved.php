@@ -25,8 +25,8 @@ class FileMoved implements ScanInterface
     {
         assert($hash !== null, 'Hash must be set for FileMoved event');
 
-        // Get the database rows that have the same hash (and different location)
-        $files = $this->file_repository->findByHashOrPath($hash, null);
+        // Get the database rows that have the same hash
+        $files = $this->file_repository->findByHash($hash);
 
         if (count($files) === 0) {
             $this->logger->info(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Cannot find moved file by hash!');

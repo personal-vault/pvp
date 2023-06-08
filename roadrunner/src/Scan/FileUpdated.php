@@ -28,15 +28,12 @@ class FileUpdated implements ScanInterface
     {
         assert($hash !== null, 'Hash must be set for FileUpdated event');
 
-        // Get the database rows that have the same path
-        $files = $this->file_repository->findByHashOrPath(null, $path);
-
-        if (count($files) === 0) {
+        $file = $this->file_repository->findByPath($path);
+        if ($file === null) {
             $this->logger->info(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Cannot find updated file by path!');
             return;
         }
 
-        $file = reset($files);
         // Re-parse the file
         $new_file = $this->parser->parse($path, $hash);
         // Set the new hash

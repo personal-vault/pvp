@@ -25,8 +25,7 @@ class FileRecreated implements ScanInterface
     {
         assert($hash !== null, 'Hash must be set for FileRecreated event');
 
-        // Get the database rows that have the same hash (and different location)
-        $files = $this->file_repository->findByHashOrPath($hash, null);
+        $files = $this->file_repository->findByHash($hash);
 
         if (count($files) === 0) {
             $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Cannot find moved file by hash!');

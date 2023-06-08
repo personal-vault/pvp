@@ -62,49 +62,38 @@ final class FileRepositoryTest extends TestCase
         $this->file_repository->create(new File(uniqid('hash2-'), $path));
     }
 
-    public function testItFindsByHashOrPathReturnsNoRowsIfNeitherIsFound(): void
+    public function testItFindsByHashReturnsNoRowsIfNotIsFound(): void
     {
-        $result = $this->file_repository->findByHashOrPath(uniqid(), uniqid());
+        $result = $this->file_repository->findByHash(uniqid());
         $this->assertSame([], $result);
     }
 
-    public function testItFindsByHashOrPathReturnsModelsIfHashMatches(): void
+    public function testItFindsByPathReturnsNoRowsIfNotIsFound(): void
+    {
+        $result = $this->file_repository->findByPath(uniqid());
+        $this->assertNull($result);
+    }
+
+    public function testItFindsByPathReturnsModelsIfPathMatches(): void
     {
         $file = new File(uniqid('hash-'), uniqid('/file-'));
         $this->file_repository->create($file);
 
-        $result = $this->file_repository->findByHashOrPath($file->hash, $file->path);
+        $found_file = $this->file_repository->findByPath($file->path);
+        $this->assertInstanceOf(File::class, $found_file);
+        $this->assertEquals($file->hash, $found_file->hash);
+        $this->assertEquals($file->path, $found_file->path);
+    }
+
+    public function testItFindsByHashReturnsModelsIfHashMatches(): void
+    {
+        $file = new File(uniqid('hash-'), uniqid('/file-'));
+        $this->file_repository->create($file);
+
+        $result = $this->file_repository->findByHash($file->hash);
         $this->assertCount(1, $result);
         $this->assertInstanceOf(File::class, $result[0]);
         $this->assertEquals($file->hash, $result[0]->hash);
         $this->assertEquals($file->path, $result[0]->path);
-    }
-
-    public function testFindByHashOrPathAcceptsNullHash(): void
-    {
-        $file = new File(uniqid('hash-'), uniqid('/file-'));
-        $this->file_repository->create($file);
-
-        $result = $this->file_repository->findByHashOrPath(null, $file->path);
-        $this->assertCount(1, $result);
-        $this->assertEquals($file->hash, $result[0]->hash);
-        $this->assertEquals($file->path, $result[0]->path);
-    }
-
-    public function testFindByHashOrPathAcceptsNullPath(): void
-    {
-        $file = new File(uniqid('hash-'), uniqid('/file-'));
-        $this->file_repository->create($file);
-
-        $result = $this->file_repository->findByHashOrPath($file->hash, null);
-        $this->assertCount(1, $result);
-        $this->assertEquals($file->hash, $result[0]->hash);
-        $this->assertEquals($file->path, $result[0]->path);
-    }
-
-    public function testFindByHashOrPathDoesNotAcceptBothPathAndHashNull()
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $result = $this->file_repository->findByHashOrPath(null, null);
     }
 }

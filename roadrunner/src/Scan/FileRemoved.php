@@ -22,8 +22,7 @@ class FileRemoved implements ScanInterface
         assert($hash === null, 'Hash must be null for FileRemoved event');
 
         // Update DB and set path to removed
-        $files = $this->file_repository->findByHashOrPath(null, $path);
-        if (count($files) === 0) {
+        if ($this->file_repository->findByPath($path) === null) {
             throw new InvalidArgumentException('File not found in DB: ' . $path);
         }
 

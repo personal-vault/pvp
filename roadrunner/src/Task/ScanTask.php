@@ -33,70 +33,61 @@ class ScanTask implements TaskInterface
         assert($settings->filename !== null && is_string($settings->filename));
         $path = $settings->filename;
 
-        // See if file is missing (has been moved or deleted)
+        // See if "path" is missing (has been moved or deleted)
         if (file_exists($path) === false) {
             $this->logger->info('ScanTask: Processing removed file ' . $path);
             $this->file_removed->process($path);
             return;
         }
 
-        // See if file is a directory
+        // See if "path" is a directory
         if (is_dir($path)) {
             $this->logger->info('ScanTask: Processing directory ' . $path);
             $this->directory_scan->process($path);
             return;
         }
 
-        // Calculate the hash
-        $hash = $this->calculate_hash($path);
-
-        $this->logger->info('ScanTask Hash: ' . $hash);
-
-        // Get the database rows that have the same hash or the same file path
-        $files = $this->file_repository->findByHashOrPath($hash, $path);
-
-        $this->logger->info('ScanTask Files: ' . json_encode($files));
-
-        if (count($files) === 0) {
-            // File Created
-            $this->logger->info('ScanTask: Processing created file ' . $path);
-            $this->file_created->process($path, $hash);
+        // See if there is content to process
+        if (filesize($path) === 0) {
+            $this->logger->info('ScanTask: Skipping empty file ' . $path);
             return;
         }
 
-        if ($files[0]->hash === $hash) {
-            if ($files[0]->path !== $path) {
+        $path_file = $this->file_repository->findByPath($path);
+        $is_same_file = $path_file !== null;
+
+        // Calculate the hash
+        $hash = $this->calculate_hash($path);
+        $same_hash_files = $this->file_repository->findByHash($hash);
+
+        if ($is_same_file === false) {
+            if (count($same_hash_files) === 0) {
+                $this->logger->info('ScanTask: Processing created file ' . $path);
+                $this->file_created->process($path, $hash);
+                return;
+            }
+
+            if (count($same_hash_files) > 0) {
                 // File Moved / Renamed
                 $this->logger->info('ScanTask: Processing moved file ' . $path);
                 $this->file_moved->process($path, $hash);
                 return;
             }
+        }
+
+        $is_same_file_and_hash = count(array_filter($same_hash_files, fn($file) => $file->path === $path)) > 0;
+        if ($is_same_file_and_hash === true) {
             // File re-added
-            $this->logger->info('ScanTask: Processing re-created file ' . $path);
+            $this->logger->info('ScanTask: Processing existing/re-created file ' . $path);
             $this->file_recreated->process($path, $hash);
             return;
         }
-
-        if ($files[0]->path === $path) {
-            // Same file, different hash => File Updated
-            $this->logger->info('ScanTask: Processing updated file ' . $path);
-            $this->file_updated->process($path, $hash);
-        }
+        // Same file, different hash => File Updated
+        $this->logger->info('ScanTask: Processing updated file ' . $path);
+        $this->file_updated->process($path, $hash);
+        return;
 
         $this->logger->warning('ScanTask: No action taken for file ' . $path);
-
-        // $attributes = $this->extract_attributes($path)[0];
-
-        // $this->logger->info('|> ' . $hash . ' ' . sprintf('%02.2f ', $time) . $path . ' ' . $attributes->MIMEType . PHP_EOL);
-
-        // // Save to database
-        // $this->file_repository->insertIfNotExist(
-        //     $hash,
-        //     $path,
-        //     $attributes->FileName,
-        //     filesize($path),
-        //     $attributes->MIMEType
-        // );
     }
 
     private function calculate_hash($path) {

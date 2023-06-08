@@ -26,8 +26,8 @@ class FileCreated implements ScanInterface
         assert($hash !== null, 'Hash must be set for FileCreated event');
 
         // Check if row exists in the DB. If it does, then return.
-        $files = $this->file_repository->findByHashOrPath(null, $path);
-        if (count($files) > 0) {
+        $file = $this->file_repository->findByPath($path);
+        if ($file !== null) {
             $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') File already exists in DB!');
             return;
         }

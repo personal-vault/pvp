@@ -7,6 +7,7 @@ use App\Repository\FileRepository;
 use App\Scan\DirectoryScan;
 use App\Scan\FileCreated;
 use App\Scan\FileMoved;
+use App\Scan\FileRecreated;
 use App\Scan\FileRemoved;
 use App\Scan\FileUpdated;
 use Test\TestCase;
@@ -127,7 +128,6 @@ final class ScanTaskTest extends TestCase
         $file_repository = $this->container->get(FileRepository::class);
         $file_repository->create($file);
 
-        // Mock the FileMoved service
         $file_updated = $this->createMock(FileUpdated::class);
         $file_updated->expects($this->once())
             ->method('process')
@@ -138,5 +138,61 @@ final class ScanTaskTest extends TestCase
         $this->assertNull(
             $scan_file_task->run('id', json_encode(['filename' => $random_file]))
         );
+    }
+
+    public function testItWillProcessAFileCorrectlyIfThereAreOthersOnDisk()
+    {
+        $random_file_1 = tempnam(sys_get_temp_dir(), uniqid('pvp1-'));
+        file_put_contents($random_file_1, uniqid('hello-world1', true));
+        $hash_1 = hash_file('sha256', $random_file_1);
+        $random_file_2 = tempnam(sys_get_temp_dir(), uniqid('pvp2-'));
+        file_put_contents($random_file_2, uniqid('hello-world2', true));
+        $hash_2 = hash_file('sha256', $random_file_2);
+
+        $file_1 = new File($hash_1, $random_file_1);
+        $file_2 = new File($hash_2, $random_file_2);
+        $file_repository = $this->container->get(FileRepository::class);
+        $file_repository->create($file_1);
+        $file_repository->create($file_2);
+
+        $file_recreated = $this->createMock(FileRecreated::class);
+        $file_recreated->expects($this->once())
+            ->method('process')
+            ->with($random_file_1);
+        $this->container->add(FileRecreated::class, $file_recreated);
+
+        $scan_file_task = $this->container->get(ScanTask::class);
+        $this->assertNull(
+            $scan_file_task->run('id', json_encode(['filename' => $random_file_1]))
+        );
+    }
+
+    public function testItWillProcessAFileCorrectlyIfItIsInMultiplePlaces()
+    {
+        $random_file_1 = tempnam(sys_get_temp_dir(), uniqid('pvp1-'));
+        $random_content = uniqid('hello-world1', true);
+        file_put_contents($random_file_1, $random_content);
+        $hash_1 = hash_file('sha256', $random_file_1);
+        $random_file_2 = tempnam(sys_get_temp_dir(), uniqid('pvp2-'));
+        file_put_contents($random_file_2, $random_content);
+        $hash_2 = hash_file('sha256', $random_file_2);
+
+        $file_1 = new File($hash_1, $random_file_1);
+        $file_2 = new File($hash_2, $random_file_2);
+        $file_repository = $this->container->get(FileRepository::class);
+        $file_repository->create($file_1);
+        $file_repository->create($file_2);
+
+        $file_recreated = $this->createMock(FileRecreated::class);
+        $file_recreated->expects($this->once())
+            ->method('process')
+            ->with($random_file_2);
+        $this->container->add(FileRecreated::class, $file_recreated);
+
+        $scan_file_task = $this->container->get(ScanTask::class);
+        $this->assertNull(
+            $scan_file_task->run('id', json_encode(['filename' => $random_file_2]))
+        );
+        $this->assertSame($hash_1, $hash_2);
     }
 }

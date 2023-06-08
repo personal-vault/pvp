@@ -33,8 +33,8 @@ class FileMovedTest extends TestCase
         );
 
         // Check that the file was set to removed
-        $files = $file_repository->findByHashOrPath(null, $new_path);
-        $this->assertCount(1, $files);
+        $file = $file_repository->findByPath($new_path);
+        $this->assertNotNull($file);
     }
 
     public function testItThrowsIfHashIsNull(): void

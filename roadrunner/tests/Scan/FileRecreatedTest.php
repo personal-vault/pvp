@@ -34,8 +34,8 @@ class FileRecreatedTest extends TestCase
         );
 
         // Check that the file was set to removed
-        $files = $file_repository->findByHashOrPath(null, $path);
-        $this->assertCount(1, $files);
-        $this->assertFalse($files[0]->isRemoved());
+        $file = $file_repository->findByPath($path);
+        $this->assertNotNull($file);
+        $this->assertFalse($file->isRemoved());
     }
 }
