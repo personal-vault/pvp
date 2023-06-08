@@ -12,6 +12,7 @@ use App\Scan\FileMoved;
 use App\Scan\FileRecreated;
 use App\Scan\FileRemoved;
 use App\Scan\FileUpdated;
+use DateTimeImmutable;
 use Psr\Log\LoggerInterface;
 
 class ScanTask implements TaskInterface
@@ -55,6 +56,15 @@ class ScanTask implements TaskInterface
 
         $path_file = $this->file_repository->findByPath($path);
         $is_same_file = $path_file !== null;
+
+        if ($path_file !== null && $path_file->scanned_at !== null) {
+            // if scanned sooner than 24 hours ago, skip
+            $timestamp = (new DateTimeImmutable($path_file->scanned_at))->getTimestamp();
+            if ($timestamp > (time() - 86400)) {
+                $this->logger->info('ScanTask: Skipping recently scanned file ' . $path);
+                return;
+            }
+        }
 
         // Calculate the hash
         $hash = $this->calculate_hash($path);

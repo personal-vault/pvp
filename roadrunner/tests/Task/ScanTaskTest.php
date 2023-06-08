@@ -10,6 +10,7 @@ use App\Scan\FileMoved;
 use App\Scan\FileRecreated;
 use App\Scan\FileRemoved;
 use App\Scan\FileUpdated;
+use DateTimeImmutable;
 use Test\TestCase;
 
 final class ScanTaskTest extends TestCase
@@ -194,5 +195,30 @@ final class ScanTaskTest extends TestCase
             $scan_file_task->run('id', json_encode(['filename' => $random_file_2]))
         );
         $this->assertSame($hash_1, $hash_2);
+    }
+
+    public function testItWillSkipARecentlyScannedFile()
+    {
+        // Create random temporary file
+        $random_file = tempnam(sys_get_temp_dir(), uniqid('pvp-'));
+        file_put_contents($random_file, uniqid('hello-world', true));
+        $hash = hash_file('sha256', $random_file);
+
+        // Create DB file with a different hash
+        $file = new File($hash, $random_file);
+        $file->scanned_at = (new DateTimeImmutable())->format('Y-m-d H:i:s');
+        $file_repository = $this->container->get(FileRepository::class);
+        $file_repository->create($file);
+
+        $file_recreated = $this->createMock(FileRecreated::class);
+        $file_recreated->expects($this->never())
+            ->method('process')
+            ->with($random_file);
+        $this->container->add(FileRecreated::class, $file_recreated);
+
+        $scan_file_task = $this->container->get(ScanTask::class);
+        $this->assertNull(
+            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
+        );
     }
 }

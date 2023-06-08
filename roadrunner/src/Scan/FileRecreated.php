@@ -25,15 +25,12 @@ class FileRecreated implements ScanInterface
     {
         assert($hash !== null, 'Hash must be set for FileRecreated event');
 
-        $files = $this->file_repository->findByHash($hash);
+        $file = $this->file_repository->findByPath($path);
 
-        if (count($files) === 0) {
-            $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Cannot find moved file by hash!');
+        if ($file === null) {
+            $this->logger->warning(__CLASS__ . '::' . __METHOD__ . '(' . $path .') Cannot find file by hash!');
             return;
         }
-
-        $file = reset($files);
-
         if ($file->path != $path) {
             $this->logger->warning(
                 __CLASS__ . '::' . __METHOD__ . '(' . $path .') Re-added file path mismatched with ' . $file->path
@@ -41,7 +38,9 @@ class FileRecreated implements ScanInterface
             return;
         }
 
-        $this->file_repository->updateRemovedByPath($path, null);
+        $file->removed_at = null;
+        $file->scanned_at = date('Y-m-d H:i:s');
+        $this->file_repository->updateByPath($path, $file);
 
         // Dispatch analyze job
         $queue = $this->jobs->connect('consumer');
