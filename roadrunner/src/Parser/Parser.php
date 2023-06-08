@@ -7,6 +7,7 @@ namespace App\Parser;
 use App\Exception\FilePathNotFoundException;
 use App\Exception\ParseFileAttributesException;
 use App\Model\File;
+use App\Repository\FileIssueRepository;
 use InvalidArgumentException;
 
 /**
@@ -20,7 +21,7 @@ use InvalidArgumentException;
 class Parser
 {
     public function __construct(
-
+        private FileIssueRepository $file_issue_repository
     ) {}
 
     public function parse(
@@ -32,13 +33,17 @@ class Parser
         }
 
         $attributes = $this->extract_attributes($path);
-        if (count($attributes) === 0) {
-            throw new InvalidArgumentException('Failed to extract attributes for file: ' . $path);
-        }
 
         $file = new File($hash, $path);
         $file->filename = $attributes[0]->FileName ?? null;
         $file->filesize = filesize($path);
+
+        if (isset($attributes[0]->Error)) {
+            // Failed to extract information from file
+            $this->file_issue_repository->create($file, 'Parser/exiftool', $attributes[0]->Error);
+            return $file;
+        }
+
         if (!empty($attributes[0]->CreateDate) && $attributes[0]->CreateDate !== '0000:00:00 00:00:00') {
             $file->date_created = self::convertDateToIso8601($attributes[0]->CreateDate) ?? null;
         }
@@ -59,10 +64,8 @@ class Parser
         $output = [];
         $exit_code = null;
         exec('exiftool -j ' . escapeshellarg($path), $output, $exit_code);
-        if ($exit_code !== 0) {
-            throw new ParseFileAttributesException($path, 'Exit code' . $exit_code);
-        }
-        return json_decode(implode("\n", $output));
+        $result = json_decode(implode("\n", $output));
+        return $result;
     }
 
     private static function convertDMStoDEC($deg, $min, $sec, $hem) {

@@ -5,7 +5,6 @@ namespace App\Repository;
 use App\Database;
 use App\Exception\FilePathAlreadyExistsException;
 use App\Model\File;
-use InvalidArgumentException;
 use PDO;
 use Test\TestCase;
 

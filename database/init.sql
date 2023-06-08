@@ -15,3 +15,14 @@ CREATE TABLE files (
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     removed_at TIMESTAMP
 );
+
+CREATE TABLE file_issues (
+    id SERIAL PRIMARY KEY,
+    hash VARCHAR(64) NOT NULL,
+    path TEXT NOT NULL,
+    filename TEXT,
+    filesize BIGINT,
+    tool VARCHAR(64) NOT NULL,
+    issue TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

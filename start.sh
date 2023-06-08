@@ -5,7 +5,8 @@ port=7030
 wait_time=10
 counter=0
 
-docker-compose up -d --build
+# Run `docker compose build --no-cache` to force a rebuild
+docker compose up -d --build
 
 while ! nc -z $host $port; do
   sleep 1
@@ -28,4 +29,4 @@ echo "Watching for changes in $HOST_VAULT_PATH"
 
 fswatch -0 --event Created --event Updated --event Renamed --event Removed ./vault | xargs -0 -n 1 -I {} ./path-converter.sh {}
 
-docker-compose down
+docker compose down
