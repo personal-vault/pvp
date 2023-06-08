@@ -1,0 +1,28 @@
+name: Build and test
+
+on:
+  push:
+    branches: [ "main" ]
+    paths: ["database","roadrunner","viewer"]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Configure application
+      run: cp ./.env.example ./.env && mkdir ./vault
+    - name: Build the Docker images
+      run: docker compose build --no-cache
+    - name: Start the containers
+      run: ./start.sh &
+    - name: Wait for the containers to start
+      run: sleep 30
+    - name: Run the tests
+      run: ./test.sh
