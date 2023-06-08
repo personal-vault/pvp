@@ -18,11 +18,13 @@ jobs:
     - uses: actions/checkout@v3
     - name: Configure application
       run: cp ./.env.example ./.env && mkdir ./vault
+    - name: Copy configuration
+      run: cp ./.env ./roadrunner/config/
     - name: Build the Docker images
       run: docker compose build
     - name: Start the containers
       run: docker compose up -d
     - name: Wait for the containers to start
-      run: sleep 15 && docker ps && sleep 15 && docker ps && docker logs roadrunner
+      run: sleep 5 && docker ps && docker logs roadrunner
     - name: Run the tests
       run: ./test.sh
