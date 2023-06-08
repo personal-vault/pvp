@@ -23,6 +23,6 @@ jobs:
     - name: Start the containers
       run: docker compose up -d
     - name: Wait for the containers to start
-      run: sleep 10
+      run: sleep 5 && docker ps && sleep 5 && docker ps
     - name: Run the tests
       run: ./test.sh
