@@ -20,6 +20,8 @@ jobs:
       run: cp ./.env.example ./.env && mkdir ./vault
     - name: Copy configuration
       run: cp ./.env ./roadrunner/config/
+    - name: Create public directory
+      run: mkdir ./roadrunner/public
     - name: Build the Docker images
       run: docker compose build
     - name: Start the containers
