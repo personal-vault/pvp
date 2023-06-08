@@ -19,10 +19,10 @@ jobs:
     - name: Configure application
       run: cp ./.env.example ./.env && mkdir ./vault
     - name: Build the Docker images
-      run: docker compose build --no-cache
+      run: docker compose build
     - name: Start the containers
-      run: ./start.sh &
+      run: docker compose up -d
     - name: Wait for the containers to start
-      run: sleep 30
+      run: sleep 10
     - name: Run the tests
       run: ./test.sh
