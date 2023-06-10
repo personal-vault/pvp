@@ -1,3 +1,4 @@
+-- Main table holding all the files in the storage/vault
 CREATE TABLE files (
     id SERIAL PRIMARY KEY,
     hash VARCHAR(64) NOT NULL,
@@ -16,8 +17,7 @@ CREATE TABLE files (
     removed_at TIMESTAMP
 );
 
--- Can we have comments here?
-
+-- Table holding all the issues found in the files
 CREATE TABLE file_issues (
     id SERIAL PRIMARY KEY,
     hash VARCHAR(64) NOT NULL,
