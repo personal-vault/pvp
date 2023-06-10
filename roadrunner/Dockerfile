@@ -1,6 +1,8 @@
 FROM ghcr.io/roadrunner-server/roadrunner:2023.1.3 AS roadrunner
 FROM php:8-fpm
 
+WORKDIR /var/www
+
 COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
 
 # Install the Postgres PDO extension
@@ -27,4 +29,7 @@ RUN curl https://exiftool.org/Image-ExifTool-12.62.tar.gz -o /tmp/exiftool.tar.g
     && make install \
     && rm -rf /tmp/exiftool.tar.gz /tmp/Image-ExifTool-12.62
 
-CMD rr serve -c /etc/roadrunner/.rr.yaml --dotenv /etc/roadrunner/.env
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+CMD composer install && rr serve -c /etc/roadrunner/.rr.yaml
