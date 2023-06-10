@@ -8,6 +8,9 @@ COPY --from=roadrunner /usr/bin/rr /usr/local/bin/rr
 # Install the Postgres PDO extension
 RUN apt-get update && apt-get install -y \
     libpq-dev \
+    git \
+    zip \
+    unzip \
     && docker-php-ext-configure pgsql -with-pgsql=/usr/local/pgsql \
     && docker-php-ext-install pdo pdo_pgsql pgsql
 
