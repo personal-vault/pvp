@@ -16,6 +16,8 @@ CREATE TABLE files (
     removed_at TIMESTAMP
 );
 
+-- Can we have comments here?
+
 CREATE TABLE file_issues (
     id SERIAL PRIMARY KEY,
     hash VARCHAR(64) NOT NULL,
