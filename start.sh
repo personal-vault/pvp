@@ -27,6 +27,6 @@ source .env
 
 echo "Watching for changes in $HOST_VAULT_PATH"
 
-fswatch -0 --event Created --event Updated --event Renamed --event Removed ./vault | xargs -0 -n 1 -I {} ./path-converter.sh {}
+fswatch -0 --event Created --event Updated --event Renamed --event Removed $HOST_VAULT_PATH | xargs -0 -n 1 -I {} ./path-converter.sh {}
 
 docker compose down
