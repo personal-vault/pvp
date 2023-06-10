@@ -151,10 +151,11 @@ class FileRepository
         $file->filesize = (int) $row['filesize'];
         $file->mime = $row['mime'];
         $file->date_created = $row['date_created'];
-        $file->gps_lat = (float)$row['gps_lat'];
-        $file->gps_lon = (float)$row['gps_lon'];
-        $file->gps_alt = (float)$row['gps_alt'];
+        $file->gps_lat = $row['gps_lat'] ? (float)$row['gps_lat'] : null;
+        $file->gps_lon = $row['gps_lon'] ? (float)$row['gps_lon'] : null;
+        $file->gps_alt = $row['gps_alt'] ? (float)$row['gps_alt'] : null;
         $file->scanned_at = $row['scanned_at'];
+        $file->scan_version = $row['scan_version'];
         $file->created_at = $row['created_at'];
         $file->updated_at = $row['updated_at'];
         $file->removed_at = $row['removed_at'];
