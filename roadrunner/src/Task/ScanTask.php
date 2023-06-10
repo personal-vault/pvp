@@ -79,7 +79,7 @@ class ScanTask implements TaskInterface
 
             if (count($same_hash_files) > 0) {
                 // File Moved / Renamed
-                $this->logger->info('ScanTask: Processing moved file ' . $path);
+                $this->logger->info('ScanTask: Processing copied/moved file ' . $path);
                 $this->file_moved->process($path, $hash);
                 return;
             }
