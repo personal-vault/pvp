@@ -20,14 +20,14 @@ final class ScanTaskTest extends TestCase
         $file_removed = $this->createMock(FileRemoved::class);
         $file_removed->expects($this->once())
             ->method('process')
-            ->with('/vault/some-inexisting-file');
+            ->with('/tmp/some-inexisting-file');
 
         $this->container->add(FileRemoved::class, $file_removed);
 
         $scan_file_task = $this->container->get(ScanTask::class);
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => '/vault/some-inexisting-file']))
+            $scan_file_task->run('id', json_encode(['filename' => '/tmp/some-inexisting-file']))
         );
     }
 
