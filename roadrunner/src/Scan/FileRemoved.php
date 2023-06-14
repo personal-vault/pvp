@@ -21,8 +21,9 @@ class FileRemoved implements ScanInterface
     {
         assert($hash === null, 'Hash must be null for FileRemoved event');
 
+        $file = $this->file_repository->findByPath($path);
         // Update DB and set path to removed
-        if ($this->file_repository->findByPath($path) === null) {
+        if ($file === null) {
             throw new InvalidArgumentException('File not found in DB: ' . $path);
         }
 
@@ -32,7 +33,7 @@ class FileRemoved implements ScanInterface
         $queue = $this->jobs->connect('consumer');
         $task = $queue->create(
             AnalyzeTask::class,
-            payload: \json_encode(['filename' => (string) $path])
+            payload: json_encode(['file_id' => $file->id])
         );
         $queue->dispatch($task);
     }

@@ -13,10 +13,13 @@ use App\Scan\FileRecreated;
 use App\Scan\FileRemoved;
 use App\Scan\FileUpdated;
 use DateTimeImmutable;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
 class ScanTask implements TaskInterface
 {
+    private ContainerInterface $container;
+
     public function __construct(
         private DirectoryScan $directory_scan,
         private FileCreated $file_created,
@@ -27,6 +30,11 @@ class ScanTask implements TaskInterface
         private FileUpdated $file_updated,
         private LoggerInterface $logger
     ) {}
+
+    public function container(ContainerInterface $container): void
+    {
+        $this->container = $container;
+    }
 
     public function run(string $id, string $payload): void
     {

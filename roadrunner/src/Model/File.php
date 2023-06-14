@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
+use stdClass;
+
 class File
 {
     public int $id;
@@ -16,8 +18,11 @@ class File
     public ?float $gps_lat = null;
     public ?float $gps_lon = null;
     public ?float $gps_alt = null;
+    public ?stdClass $metadata = null;
+    public ?string $transcript = null;
     public int $scan_version = 0;
     public ?string $scanned_at = null;
+    public ?string $analyzed_at = null;
     public string $created_at;
     public string $updated_at;
     public ?string $removed_at = null;

@@ -40,6 +40,7 @@ if ($isJobsMode) {
         $action = $container->get($task->getName());
         try {
             $logger->info('Running task ' . $task->getName() . ' with payload ' . json_encode($task->getPayload()));
+            $action->container($container);
             $action->run($task->getId(), $task->getPayload());
             $task->complete();
         } catch (\Throwable $e) {

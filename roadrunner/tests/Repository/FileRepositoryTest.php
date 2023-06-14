@@ -24,32 +24,60 @@ final class FileRepositoryTest extends TestCase
         $file->filename = uniqid('filename-');
         $file->filesize = (int)rand(1, 1000);
         $file->mime = uniqid('mime-');
+        $file->metadata = (object) ['foo' => 'bar'];
+        $file->transcript = 'Once üpon a time';
+        $file->analyzed_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $file->scanned_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $file->created_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $file->updated_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $file->removed_at = null;
         $file->scan_version = rand(1, 1000);
-        $this->file_repository->create($file);
+        $id = $this->file_repository->create($file);
 
-        $database = $this->container->get(Database::class);
-        $pdo = $database->getPdo();
-        $query = "SELECT * FROM files WHERE hash = :hash";
-        $stmt = $pdo->prepare($query);
-        $stmt->bindParam(':hash', $file->hash, PDO::PARAM_STR);
-        $stmt->execute();
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
-        $this->assertNotEmpty($result['id']);
+        $result = $this->selectFirstWhere('files', ['hash' => $file->hash]);
+        $this->assertSame($id, $result['id']);
         $this->assertSame($file->hash, $result['hash']);
         $this->assertSame($file->path, $result['path']);
         $this->assertSame($file->filename, $result['filename']);
         $this->assertSame($file->filesize, (int) $result['filesize']);
         $this->assertSame($file->mime, $result['mime']);
+        $this->assertEquals($file->metadata, json_decode($result['metadata']));
+        $this->assertSame('Once üpon a time', $result['transcript']);
         $this->assertSame($file->scan_version, (int) $result['scan_version']);
-
+        $this->assertSame($file->analyzed_at, $result['analyzed_at']);
         $this->assertNotEmpty($result['scanned_at']);
         $this->assertNotEmpty($result['created_at']);
         $this->assertNotEmpty($result['updated_at']);
         $this->assertNull($result['removed_at']);
+    }
+
+    public function testItCreatesAFileWithMinimalInfo(): void
+    {
+        $file = new File(uniqid('hash-'), uniqid('/file-'));
+
+        $id = $this->file_repository->create($file);
+
+        $result = $this->selectFirstWhere('files', ['hash' => $file->hash]);
+
+        $this->assertSame($id, $result['id']);
+        $this->assertSame($file->hash, $result['hash']);
+        $this->assertSame($file->path, $result['path']);
+        $this->assertNull($result['filename']);
+        $this->assertNull($result['date_created']);
+        $this->assertNull($result['gps_lat']);
+        $this->assertNull($result['gps_lon']);
+        $this->assertNull($result['gps_alt']);
+        $this->assertNull($result['filesize']);
+        $this->assertNull($result['mime']);
+        $this->assertNull($result['metadata']);
+        $this->assertNull($result['transcript']);
+        $this->assertSame(0, (int) $result['scan_version']);
+        $this->assertNull($result['analyzed_at']);
+        $this->assertNull($result['scanned_at']);
+        $this->assertNotEmpty($result['created_at']);
+        $this->assertNotEmpty($result['updated_at']);
+        $this->assertNull($result['removed_at']);
+
     }
 
     public function testCreateThrowsIfPathIsNotUnique(): void
@@ -92,6 +120,7 @@ final class FileRepositoryTest extends TestCase
         $result = $this->file_repository->findByHash($file->hash);
         $this->assertCount(1, $result);
         $this->assertInstanceOf(File::class, $result[0]);
+        $this->assertNotEmpty($result[0]->id);
         $this->assertEquals($file->hash, $result[0]->hash);
         $this->assertEquals($file->path, $result[0]->path);
     }

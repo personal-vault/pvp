@@ -10,8 +10,11 @@ CREATE TABLE files (
     gps_lat REAL,
     gps_lon REAL,
     gps_alt REAL,
+    metadata JSONB DEFAULT NULL,
+    transcript TEXT,
     scan_version INTEGER,
     scanned_at TIMESTAMP,
+    analyzed_at TIMESTAMP,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     removed_at TIMESTAMP

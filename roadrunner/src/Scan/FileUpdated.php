@@ -57,7 +57,7 @@ class FileUpdated implements ScanInterface
         $queue = $this->jobs->connect('consumer');
         $task = $queue->create(
             AnalyzeTask::class,
-            payload: \json_encode(['filename' => (string) $path])
+            payload: json_encode(['file_id' => $file->id])
         );
         $queue->dispatch($task);
     }
