@@ -76,6 +76,16 @@ services:
   #   depends_on:
   #     - database
 
+  # The next services are optional and you can remove them if you don't need them
+  ocrmypdf:
+    container_name: ocrmypdf
+    image: jbarlow83/ocrmypdf
+    entrypoint: python3
+    command: webservice.py
+    ports:
+      - "7040:5000"
+    restart: unless-stopped
+
 networks:
   internal:
     driver: bridge

@@ -57,3 +57,7 @@ nav_order: 100
 ## Articles
 
 - [The Verge: My impossible search for the best, most powerful, most private journaling app ever](https://www.theverge.com/2023/3/29/23660375/journaling-app-day-one-security-personal-space)
+
+## OCR
+
+- [A comprehensive guide to OCR with Tesseract, OpenCV and Python](https://medium.com/nanonets/a-comprehensive-guide-to-ocr-with-tesseract-opencv-and-python-fd42f69e8ca8)
