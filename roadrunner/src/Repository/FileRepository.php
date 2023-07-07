@@ -26,21 +26,20 @@ class FileRepository
     {
         try {
             $query = "
-                INSERT INTO files (hash, path, filename, filesize, mime, date_created, gps_lat, gps_lon, gps_alt, metadata, transcript, scanned_at, analyzed_at, scan_version, created_at, updated_at, removed_at)
-                VALUES (:hash, :path, :filename, :filesize, :mime, :date_created, :gps_lat, :gps_lon, :gps_alt, :metadata, :transcript, :scanned_at, :analyzed_at, :scan_version, NOW(), NOW(), NULL)
+                INSERT INTO files (hash, path, name, size, mime, date, lat, lon, metadata, transcript, scanned_at, analyzed_at, scan_version, created_at, updated_at, removed_at)
+                VALUES (:hash, :path, :name, :size, :mime, :date, :lat, :lon, :metadata, :transcript, :scanned_at, :analyzed_at, :scan_version, NOW(), NOW(), NULL)
             ";
             $stmt = $this->pdo->prepare($query);
             // don't use `bindValue`
             // because https://www.php.net/manual/en/pdostatement.bindparam.php#94711
             $stmt->bindValue(':hash', $file->hash, PDO::PARAM_STR);
             $stmt->bindValue(':path', $file->path, PDO::PARAM_STR);
-            $stmt->bindValue(':filename', $file->filename, PDO::PARAM_STR);
-            $stmt->bindValue(':filesize', $file->filesize ?? null, PDO::PARAM_INT);
+            $stmt->bindValue(':name', $file->name, PDO::PARAM_STR);
+            $stmt->bindValue(':size', $file->size ?? null, PDO::PARAM_INT);
             $stmt->bindValue(':mime', $file->mime, PDO::PARAM_STR);
-            $stmt->bindValue(':date_created', $file->date_created, PDO::PARAM_STR);
-            $stmt->bindValue(':gps_lat', $file->gps_lat, PDO::PARAM_STR);
-            $stmt->bindValue(':gps_lon', $file->gps_lon, PDO::PARAM_STR);
-            $stmt->bindValue(':gps_alt', $file->gps_alt, PDO::PARAM_STR);
+            $stmt->bindValue(':date', $file->date, PDO::PARAM_STR);
+            $stmt->bindValue(':lat', $file->lat, PDO::PARAM_STR);
+            $stmt->bindValue(':lon', $file->lon, PDO::PARAM_STR);
             $stmt->bindValue(':metadata', isset($file->metadata) ? json_encode($file->metadata) : null, PDO::PARAM_STR);
             $stmt->bindValue(':transcript', $file->transcript, PDO::PARAM_STR);
             $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
@@ -78,13 +77,12 @@ class FileRepository
             UPDATE files
             SET hash = :hash,
                 path = :path,
-                filename = :filename,
-                filesize = :filesize,
+                name = :name,
+                size = :size,
                 mime = :mime,
-                date_created = :date_created,
-                gps_lat = :gps_lat,
-                gps_lon = :gps_lon,
-                gps_alt = :gps_alt,
+                date = :date,
+                lat = :lat,
+                lon = :lon,
                 scanned_at = :scanned_at,
                 removed_at = :removed_at,
                 updated_at = NOW()
@@ -93,13 +91,12 @@ class FileRepository
         $stmt = $this->pdo->prepare($query);
         $stmt->bindValue(':path', $path, PDO::PARAM_STR);
         $stmt->bindValue(':hash', $file->hash, PDO::PARAM_STR);
-        $stmt->bindValue(':filename', $file->filename, PDO::PARAM_STR);
-        $stmt->bindValue(':filesize', $file->filesize, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $file->name, PDO::PARAM_STR);
+        $stmt->bindValue(':size', $file->size, PDO::PARAM_INT);
         $stmt->bindValue(':mime', $file->mime, PDO::PARAM_STR);
-        $stmt->bindValue(':date_created', $file->date_created, PDO::PARAM_STR);
-        $stmt->bindValue(':gps_lat', $file->gps_lat, PDO::PARAM_STR);
-        $stmt->bindValue(':gps_lon', $file->gps_lon, PDO::PARAM_STR);
-        $stmt->bindValue(':gps_alt', $file->gps_alt, PDO::PARAM_STR);
+        $stmt->bindValue(':date', $file->date, PDO::PARAM_STR);
+        $stmt->bindValue(':lat', $file->lat, PDO::PARAM_STR);
+        $stmt->bindValue(':lon', $file->lon, PDO::PARAM_STR);
         $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
         $stmt->bindValue(':removed_at', $file->removed_at, PDO::PARAM_STR);
         $stmt->execute();
@@ -111,13 +108,12 @@ class FileRepository
             UPDATE files
             SET hash = :hash,
                 path = :path,
-                filename = :filename,
-                filesize = :filesize,
+                name = :name,
+                size = :size,
                 mime = :mime,
-                date_created = :date_created,
-                gps_lat = :gps_lat,
-                gps_lon = :gps_lon,
-                gps_alt = :gps_alt,
+                date = :date,
+                lat = :lat,
+                lon = :lon,
                 transcript = :transcript,
                 scanned_at = :scanned_at,
                 removed_at = :removed_at,
@@ -128,13 +124,12 @@ class FileRepository
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
         $stmt->bindValue(':path', $file->path, PDO::PARAM_STR);
         $stmt->bindValue(':hash', $file->hash, PDO::PARAM_STR);
-        $stmt->bindValue(':filename', $file->filename, PDO::PARAM_STR);
-        $stmt->bindValue(':filesize', $file->filesize, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $file->name, PDO::PARAM_STR);
+        $stmt->bindValue(':size', $file->size, PDO::PARAM_INT);
         $stmt->bindValue(':mime', $file->mime, PDO::PARAM_STR);
-        $stmt->bindValue(':date_created', $file->date_created, PDO::PARAM_STR);
-        $stmt->bindValue(':gps_lat', $file->gps_lat, PDO::PARAM_STR);
-        $stmt->bindValue(':gps_lon', $file->gps_lon, PDO::PARAM_STR);
-        $stmt->bindValue(':gps_alt', $file->gps_alt, PDO::PARAM_STR);
+        $stmt->bindValue(':date', $file->date, PDO::PARAM_STR);
+        $stmt->bindValue(':lat', $file->lat, PDO::PARAM_STR);
+        $stmt->bindValue(':lon', $file->lon, PDO::PARAM_STR);
         $stmt->bindValue(':transcript', $file->transcript, PDO::PARAM_STR);
         $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
         $stmt->bindValue(':removed_at', $file->removed_at, PDO::PARAM_STR);
@@ -210,13 +205,12 @@ class FileRepository
             $row['path']
         );
         $file->id = (int) $row['id'];
-        $file->filename = $row['filename'];
-        $file->filesize = (int) $row['filesize'];
+        $file->name = $row['name'];
+        $file->size = (int) $row['size'];
         $file->mime = $row['mime'];
-        $file->date_created = $row['date_created'];
-        $file->gps_lat = $row['gps_lat'] ? (float)$row['gps_lat'] : null;
-        $file->gps_lon = $row['gps_lon'] ? (float)$row['gps_lon'] : null;
-        $file->gps_alt = $row['gps_alt'] ? (float)$row['gps_alt'] : null;
+        $file->date = $row['date'];
+        $file->lat = $row['lat'] ? (float)$row['lat'] : null;
+        $file->lon = $row['lon'] ? (float)$row['lon'] : null;
         $file->scanned_at = $row['scanned_at'];
         $file->scan_version = $row['scan_version'];
         $file->created_at = $row['created_at'];

@@ -28,7 +28,7 @@ class ScanController {
         $queue = $this->jobs->connect('consumer');
         $task = $queue->create(
             ScanTask::class,
-            payload: \json_encode(['filename' => $path])
+            payload: \json_encode(['name' => $path])
         );
         $queue->dispatch($task);
 

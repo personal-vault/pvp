@@ -26,16 +26,16 @@ class FileIssueRepository
     {
         try {
             $query = "
-                INSERT INTO file_issues (hash, path, filename, filesize, tool, issue, created_at)
-                VALUES (:hash, :path, :filename, :filesize, :tool, :issue, NOW())
+                INSERT INTO file_issues (hash, path, name, size, tool, issue, created_at)
+                VALUES (:hash, :path, :name, :size, :tool, :issue, NOW())
             ";
             $stmt = $this->pdo->prepare($query);
             // don't use `bindParam`
             // because https://www.php.net/manual/en/pdostatement.bindparam.php#94711
             $stmt->bindValue(':hash', $file->hash, PDO::PARAM_STR);
             $stmt->bindValue(':path', $file->path, PDO::PARAM_STR);
-            $stmt->bindValue(':filename', $file->filename, PDO::PARAM_STR);
-            $stmt->bindValue(':filesize', (int) $file->filesize, PDO::PARAM_INT);
+            $stmt->bindValue(':name', $file->name, PDO::PARAM_STR);
+            $stmt->bindValue(':size', (int) $file->size, PDO::PARAM_INT);
             $stmt->bindValue(':tool', $tool, PDO::PARAM_STR);
             $stmt->bindValue(':issue', $issue, PDO::PARAM_STR);
             $stmt->execute();

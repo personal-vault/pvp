@@ -11,13 +11,12 @@ class File
     public int $id;
     public string $hash;
     public string $path;
-    public ?string $filename = null;
-    public ?int $filesize = null;
+    public ?string $name = null;
+    public ?int $size = null;
     public ?string $mime = null;
-    public ?string $date_created = null;
-    public ?float $gps_lat = null;
-    public ?float $gps_lon = null;
-    public ?float $gps_alt = null;
+    public ?string $date = null;
+    public ?float $lat = null;
+    public ?float $lon = null;
     public ?stdClass $metadata = null;
     public ?string $transcript = null;
     public int $scan_version = 0;

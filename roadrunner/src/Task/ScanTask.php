@@ -39,8 +39,8 @@ class ScanTask implements TaskInterface
     public function run(string $id, string $payload): void
     {
         $settings = json_decode($payload);
-        assert($settings->filename !== null && is_string($settings->filename));
-        $path = $settings->filename;
+        assert($settings->name !== null && is_string($settings->name));
+        $path = $settings->name;
 
         // See if "path" is missing (has been moved or deleted)
         if (file_exists($path) === false) {

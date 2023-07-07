@@ -48,7 +48,7 @@ class DirectoryScan implements ScanInterface
             $this->logger->info($file_path . PHP_EOL);
             $task = $queue->create(
                 ScanTask::class,
-                payload: \json_encode(['filename' => (string) $file_path])
+                payload: \json_encode(['name' => (string) $file_path])
             );
             $queue->dispatch($task);
         }

@@ -35,8 +35,8 @@ class Parser
         $attributes = $this->extract_attributes($path);
 
         $file = new File($hash, $path);
-        $file->filename = $attributes[0]->FileName ?? null;
-        $file->filesize = filesize($path);
+        $file->name = $attributes[0]->FileName ?? null;
+        $file->size = filesize($path);
 
         if (isset($attributes[0]->Error)) {
             // Failed to extract information from file
@@ -45,15 +45,12 @@ class Parser
         }
 
         if (!empty($attributes[0]->CreateDate) && $attributes[0]->CreateDate !== '0000:00:00 00:00:00') {
-            $file->date_created = self::convertDateToIso8601($attributes[0]->CreateDate) ?? null;
+            $file->date = self::convertDateToIso8601($attributes[0]->CreateDate) ?? null;
         }
         if (!empty($attributes[0]->GPSPosition)) {
             [$lat, $lon] = self::parseDMS($attributes[0]->GPSPosition);
-            $file->gps_lat = $lat;
-            $file->gps_lon = $lon;
-        }
-        if (!empty($attributes[0]->GPSAltitude)) {
-            $file->gps_alt = (float) $attributes[0]->GPSAltitude;
+            $file->lat = $lat;
+            $file->lon = $lon;
         }
         $file->mime = $attributes[0]->MIMEType ?? null;
         return $file;

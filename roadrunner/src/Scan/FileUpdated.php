@@ -39,12 +39,11 @@ class FileUpdated implements ScanInterface
         // Set the new hash
         $file->hash = $hash;
         // Set the new parsed attributes
-        $file->filesize = $new_file->filesize;
+        $file->size = $new_file->size;
         $file->mime = $new_file->mime;
-        $file->date_created = $new_file->date_created;
-        $file->gps_lat = $new_file->gps_lat;
-        $file->gps_lon = $new_file->gps_lon;
-        $file->gps_alt = $new_file->gps_alt;
+        $file->date = $new_file->date;
+        $file->lat = $new_file->lat;
+        $file->lon = $new_file->lon;
         // File is no longer removed
         $file->removed_at = null;
         // Set scan changes

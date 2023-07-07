@@ -27,7 +27,7 @@ final class ScanTaskTest extends TestCase
         $scan_file_task = $this->container->get(ScanTask::class);
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => '/tmp/some-inexisting-file']))
+            $scan_file_task->run('id', json_encode(['name' => '/tmp/some-inexisting-file']))
         );
     }
 
@@ -46,7 +46,7 @@ final class ScanTaskTest extends TestCase
         $scan_file_task = $this->container->get(ScanTask::class);
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_directory]))
+            $scan_file_task->run('id', json_encode(['name' => $random_directory]))
         );
 
         @rmdir($random_directory);
@@ -67,7 +67,7 @@ final class ScanTaskTest extends TestCase
         $scan_file_task = $this->container->get(ScanTask::class);
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_directory]))
+            $scan_file_task->run('id', json_encode(['name' => $random_directory]))
         );
 
         @rmdir($random_directory);
@@ -89,7 +89,7 @@ final class ScanTaskTest extends TestCase
         $scan_file_task = $this->container->get(ScanTask::class);
 
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
+            $scan_file_task->run('id', json_encode(['name' => $random_file]))
         );
     }
 
@@ -114,7 +114,7 @@ final class ScanTaskTest extends TestCase
 
         $scan_file_task = $this->container->get(ScanTask::class);
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
+            $scan_file_task->run('id', json_encode(['name' => $random_file]))
         );
     }
 
@@ -137,7 +137,7 @@ final class ScanTaskTest extends TestCase
 
         $scan_file_task = $this->container->get(ScanTask::class);
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
+            $scan_file_task->run('id', json_encode(['name' => $random_file]))
         );
     }
 
@@ -164,7 +164,7 @@ final class ScanTaskTest extends TestCase
 
         $scan_file_task = $this->container->get(ScanTask::class);
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_file_1]))
+            $scan_file_task->run('id', json_encode(['name' => $random_file_1]))
         );
     }
 
@@ -192,7 +192,7 @@ final class ScanTaskTest extends TestCase
 
         $scan_file_task = $this->container->get(ScanTask::class);
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_file_2]))
+            $scan_file_task->run('id', json_encode(['name' => $random_file_2]))
         );
         $this->assertSame($hash_1, $hash_2);
     }
@@ -218,7 +218,7 @@ final class ScanTaskTest extends TestCase
 
         $scan_file_task = $this->container->get(ScanTask::class);
         $this->assertNull(
-            $scan_file_task->run('id', json_encode(['filename' => $random_file]))
+            $scan_file_task->run('id', json_encode(['name' => $random_file]))
         );
     }
 }

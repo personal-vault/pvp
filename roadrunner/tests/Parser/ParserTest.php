@@ -28,14 +28,13 @@ class ParserTest extends TestCase
         );
 
         $this->assertInstanceOf(File::class, $file);
-        $this->assertSame('IMG_9970.jpeg', $file->filename);
-        $this->assertSame(46293, $file->filesize);
+        $this->assertSame('IMG_9970.jpeg', $file->name);
+        $this->assertSame(46293, $file->size);
         $this->assertSame($path, $file->path);
         $this->assertSame('image/jpeg', $file->mime);
-        $this->assertSame('2021-11-21 16:33:06', $file->date_created);
-        $this->assertSame(37.08, round($file->gps_lat, 2));
-        $this->assertSame(-7.66, round($file->gps_lon, 2));
-        $this->assertSame(2.1, round($file->gps_alt, 1));
+        $this->assertSame('2021-11-21 16:33:06', $file->date);
+        $this->assertSame(37.08, round($file->lat, 2));
+        $this->assertSame(-7.66, round($file->lon, 2));
         $this->assertNull($file->removed_at);
     }
 }
