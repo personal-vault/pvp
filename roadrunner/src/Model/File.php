@@ -17,8 +17,6 @@ class File
     public ?string $date = null;
     public ?float $lat = null;
     public ?float $lon = null;
-    public ?stdClass $metadata = null;
-    public ?string $transcript = null;
     public int $scan_version = 0;
     public ?string $scanned_at = null;
     public ?string $analyzed_at = null;

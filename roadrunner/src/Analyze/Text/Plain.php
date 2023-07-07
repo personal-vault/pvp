@@ -20,7 +20,7 @@ class Plain implements AnalyzeInterface
 
         $file_contents = file_get_contents($file->path);
 
-        $file->transcript = $file_contents;
+        // IMPLEMENT ME
 
         return $file_contents;
     }

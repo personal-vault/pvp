@@ -26,8 +26,8 @@ class FileRepository
     {
         try {
             $query = "
-                INSERT INTO files (hash, path, name, size, mime, date, lat, lon, metadata, transcript, scanned_at, analyzed_at, scan_version, created_at, updated_at, removed_at)
-                VALUES (:hash, :path, :name, :size, :mime, :date, :lat, :lon, :metadata, :transcript, :scanned_at, :analyzed_at, :scan_version, NOW(), NOW(), NULL)
+                INSERT INTO files (hash, path, name, size, mime, date, lat, lon, scanned_at, analyzed_at, scan_version, created_at, updated_at, removed_at)
+                VALUES (:hash, :path, :name, :size, :mime, :date, :lat, :lon, :scanned_at, :analyzed_at, :scan_version, NOW(), NOW(), NULL)
             ";
             $stmt = $this->pdo->prepare($query);
             // don't use `bindValue`
@@ -40,8 +40,6 @@ class FileRepository
             $stmt->bindValue(':date', $file->date, PDO::PARAM_STR);
             $stmt->bindValue(':lat', $file->lat, PDO::PARAM_STR);
             $stmt->bindValue(':lon', $file->lon, PDO::PARAM_STR);
-            $stmt->bindValue(':metadata', isset($file->metadata) ? json_encode($file->metadata) : null, PDO::PARAM_STR);
-            $stmt->bindValue(':transcript', $file->transcript, PDO::PARAM_STR);
             $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
             $stmt->bindValue(':analyzed_at', $file->analyzed_at, PDO::PARAM_STR);
             $stmt->bindValue(':scan_version', $file->scan_version, PDO::PARAM_INT);
@@ -114,7 +112,6 @@ class FileRepository
                 date = :date,
                 lat = :lat,
                 lon = :lon,
-                transcript = :transcript,
                 scanned_at = :scanned_at,
                 removed_at = :removed_at,
                 updated_at = NOW()
@@ -130,7 +127,6 @@ class FileRepository
         $stmt->bindValue(':date', $file->date, PDO::PARAM_STR);
         $stmt->bindValue(':lat', $file->lat, PDO::PARAM_STR);
         $stmt->bindValue(':lon', $file->lon, PDO::PARAM_STR);
-        $stmt->bindValue(':transcript', $file->transcript, PDO::PARAM_STR);
         $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
         $stmt->bindValue(':removed_at', $file->removed_at, PDO::PARAM_STR);
         $stmt->execute();

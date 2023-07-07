@@ -24,8 +24,6 @@ final class FileRepositoryTest extends TestCase
         $file->name = uniqid('name-');
         $file->size = (int)rand(1, 1000);
         $file->mime = uniqid('mime-');
-        $file->metadata = (object) ['foo' => 'bar'];
-        $file->transcript = 'Once üpon a time';
         $file->analyzed_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $file->scanned_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $file->created_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
@@ -41,8 +39,6 @@ final class FileRepositoryTest extends TestCase
         $this->assertSame($file->name, $result['name']);
         $this->assertSame($file->size, (int) $result['size']);
         $this->assertSame($file->mime, $result['mime']);
-        $this->assertEquals($file->metadata, json_decode($result['metadata']));
-        $this->assertSame('Once üpon a time', $result['transcript']);
         $this->assertSame($file->scan_version, (int) $result['scan_version']);
         $this->assertSame($file->analyzed_at, $result['analyzed_at']);
         $this->assertNotEmpty($result['scanned_at']);
