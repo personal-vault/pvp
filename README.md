@@ -21,6 +21,22 @@ Components:
 
 ## Development
 
+Ensure you have a `.env` file. Start the system:
+
+```shell
+./start.sh
+```
+
+This will launch the containers, and start the watch service on the vault folder.
+
+Once the system is started, you can check it up by:
+
+- adding/updating/removing files in the `vault` directory
+- checking the database via PgAdmin at http://localhost:5050/
+- tail the logs with `tail -f ./roadrunner/logs/app.log`
+
+If you want to manually start/stop the system:
+
 ```shell
 # Destroy all conainers + volumes and rebuild from scratch
 docker compose down -v && docker compose up --build
