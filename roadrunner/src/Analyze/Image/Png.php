@@ -18,9 +18,7 @@ class Png implements AnalyzeInterface
     {
         $this->logger->info(__CLASS__ . ' analyzer called');
 
-        $file_contents = file_get_contents($file->path);
-
-        $file->transcript = $file_contents;
+        // IMPLEMENTATION HERE
 
         return $file_contents;
     }

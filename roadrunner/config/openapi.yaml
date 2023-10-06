@@ -99,35 +99,42 @@ paths:
       parameters:
         - in: query
           name: after
+          description: _Not implemented_
           schema:
             type: string
             format: date
         - in: query
           name: before
+          description: _Not implemented_
           schema:
             type: string
             format: date
         - in: query
           name: lat
+          description: _Not implemented_
           schema:
             type: number
             format: float
         - in: query
           name: lon
+          description: _Not implemented_
           schema:
             type: number
             format: float
         - in: query
           name: rad_km
+          description: _Not implemented_
           schema:
             type: number
             format: float
         - in: query
           name: mime
+          description: _Not implemented_
           schema:
             type: string
         - in: query
           name: query
+          description: The query string to search for
           schema:
             type: string
       responses:

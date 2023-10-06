@@ -4,14 +4,26 @@ declare(strict_types=1);
 
 namespace App\Task;
 
+use App\Analyze\Plaintext;
 use App\Model\File;
 use App\Repository\FileRepository;
-use League\Container\Container;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * The Analyze task does the following:
+ * - extract plain text content from a given file
+ * - index the contents, using the selected indexers
+ *
+ * Perhaps it might be a good idea to split it in two different
+ * tasks (Transcribe and Index).
+ */
 class AnalyzeTask implements TaskInterface
 {
+    private const MIME_TOOLS_MAP = [
+        'text/plain' => Plaintext::class,
+    ];
+
     private ContainerInterface $container;
 
     public function __construct(
@@ -35,34 +47,59 @@ class AnalyzeTask implements TaskInterface
         $file = $this->file_repository->findById($settings->file_id);
 
         if ($file->isRemoved() === false) {
-            // Run analyzers based on the mime filetype
-            $this->process($file);
+            $this->extractMeta($file);
+            $this->transcribe($file);
         }
 
-        //TODO: Trigger next task processor
+        // Load a fresh copy
+        $file = $this->file_repository->findById($settings->file_id);
+
+        $this->index($file);
+
+        //TODO: mark as analyzed if the above succeed.
     }
 
-    private function process(File $file): void
+    /**
+     * Run the exiftool to extract basic data about this file
+     */
+    private function extractMeta(File $file): void
+    {
+        $output = shell_exec('exiftool -json ' . escapeshellarg($file->path));
+        $meta = json_decode($output)[0];
+
+        $file->mime = $meta->MIMEType;
+        $this->file_repository->updateById($file->id, $file);
+    }
+
+    /**
+     * Extract transcription for the given $file
+     */
+    private function transcribe(File $file): void
     {
         if (empty($file->mime)) {
             $this->logger->info('Analyze without mime for file ID ' . $file->id);
             return;
         }
 
-        $file->analyzed_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
-
-        // Convert mime to class name
-        $class_name = '\\App\\Analyze\\' . str_replace(' ', '\\', ucwords(str_replace('/', ' ', $file->mime)));
-
-        if ($this->container->has($class_name) === false) {
-            $this->logger->warning('Analyze does not have class ' . $class_name);
-            $this->file_repository->updateById($file->id, $file);
+        if (!isset(self::MIME_TOOLS_MAP[$file->mime])) {
+            $this->logger->warning('Analyze does not have mapping for MIME ' . $file->mime);
             return;
         }
 
-        $object = $this->container->get($class_name);
-        $object->analyze($file);
+        $analyzer = $this->container->get(self::MIME_TOOLS_MAP[$file->mime]);
 
+        $file->transcript = $analyzer->analyze($file);
+        // This should not be here, but after the indexing part
+        // or we should split in transcribed_at and indexed_at (TBD)
+        $file->analyzed_at = (new \DateTimeImmutable())->format('Y-m-d H:i:s');
         $this->file_repository->updateById($file->id, $file);
+    }
+
+    /**
+     * Index the given file
+     */
+    private function index(File $file): void
+    {
+        //TODO: implement me
     }
 }

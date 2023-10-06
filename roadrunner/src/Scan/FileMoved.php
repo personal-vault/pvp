@@ -35,8 +35,8 @@ class FileMoved implements ScanInterface
 
         $file = reset($files);
         $file->path = $path;
-        $file->filename = basename($path);
-        //TODO: parse file to update filesize, mime, date_created, gps_lat, gps_lon, gps_alt etc.
+        $file->name = basename($path);
+        //TODO: parse file to update size, mime, date, lat, lon etc.
         $file->scanned_at = null;
         $file->removed_at = null;
         $this->file_repository->create($file);

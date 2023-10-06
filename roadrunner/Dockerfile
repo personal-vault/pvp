@@ -35,4 +35,7 @@ RUN curl https://exiftool.org/Image-ExifTool-12.62.tar.gz -o /tmp/exiftool.tar.g
 # Install composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Install tessaract-ocr
+# RUN apt-get -y install tesseract-ocr tesseract-ocr-por tesseract-ocr-ron
+
 CMD composer install && rr serve -c /etc/roadrunner/.rr.yaml

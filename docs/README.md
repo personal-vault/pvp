@@ -22,6 +22,20 @@ You're free to customize sites that you create with this template, however you l
 
 [Browse our documentation][Just the Docs] to learn more about how to use this theme.
 
+## Troubleshooting
+
+> `bundle install` throws `/opt/homebrew/opt/ruby/bin/bundle:25:in 'load': cannot load such file -- /opt/homebrew/lib/ruby/gems/3.2.0/gems/bundler-2.3.9/exe/bundle (LoadError)`
+
+Some versions of RubyGems try to use the exact version of Bundler listed in your `Gemfile.lock` anytime you run the bundle command. To do that, run:
+
+```shell
+$ gem install bundler -v "$(grep -A 1 "BUNDLED WITH" Gemfile.lock | tail -n 1)"
+```
+
+([source](https://bundler.io/blog/2019/05/14/solutions-for-cant-find-gem-bundler-with-executable-bundle.html))
+
+
+
 ----
 
 [^1]: [It can take up to 10 minutes for changes to your site to publish after you push the changes to GitHub](https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-your-site).

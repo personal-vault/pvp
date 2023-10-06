@@ -22,8 +22,8 @@ final class FileIssueRepositoryTest extends TestCase
     public function testItCreatesAFileIssueEntry(): void
     {
         $file = new File(uniqid('hash-'), uniqid('/file-'));
-        $file->filename = uniqid('filename-');
-        $file->filesize = (int)rand(1, 1000);
+        $file->name = uniqid('name-');
+        $file->size = (int)rand(1, 1000);
         $this->file_issue_repository->create($file, 'some/tool', 'Some issue');
 
         $database = $this->container->get(Database::class);
@@ -37,8 +37,8 @@ final class FileIssueRepositoryTest extends TestCase
         $this->assertNotEmpty($result['id']);
         $this->assertSame($file->hash, $result['hash']);
         $this->assertSame($file->path, $result['path']);
-        $this->assertSame($file->filename, $result['filename']);
-        $this->assertSame($file->filesize, (int) $result['filesize']);
+        $this->assertSame($file->name, $result['name']);
+        $this->assertSame($file->size, (int) $result['size']);
         $this->assertSame('some/tool', $result['tool']);
         $this->assertSame('Some issue', $result['issue']);
         $this->assertNotEmpty($result['created_at']);

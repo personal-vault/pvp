@@ -6,5 +6,5 @@ use App\Model\File;
 
 interface AnalyzeInterface
 {
-    public function analyze(File $file): string;
+    public function analyze(File $file): ?string;
 }

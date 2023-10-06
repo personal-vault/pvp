@@ -21,7 +21,26 @@ Components:
 
 ## Development
 
+Ensure you have a `.env` file. Start the system:
+
 ```shell
+./start.sh
+```
+
+This will launch the containers, and start the watch service on the vault folder.
+
+Once the system is started, you can check it up by:
+
+- adding/updating/removing files in the `vault` directory
+- checking the database via PgAdmin at http://localhost:5050/
+- tail the logs with `tail -f ./roadrunner/logs/app.log`
+
+If you want to manually start/stop the system:
+
+```shell
+# Start the system
+docker compose up
+
 # Destroy all conainers + volumes and rebuild from scratch
 docker compose down -v && docker compose up --build
 
@@ -42,6 +61,41 @@ Watch and send:
 
 ```
 fswatch -0 --event Created --event Updated --event Renamed --event Removed ./vault | xargs -0 -n 1 -I {} ./path-converter.sh {}
+```
+
+Connect to the roadrunner container:
+
+```shell
+$ docker compose exec --workdir /var/www roadrunner /bin/bash
+```
+
+## Scan
+
+To start a complete scan, considering the folder `vault` in the current folder holds the entire vault:
+
+```shell
+$ ./path-converter.sh $(realpath "vault")
+```
+
+## API
+
+There is an API that can be used to interact with the system.
+
+To edit the API specs:
+
+```shell
+./swagger-editor.sh
+```
+
+Base URL for the API endpoints is http://localhost:7030/
+
+## Frontend
+
+```shell
+$ cd viewer
+$ npm install
+$ npm run format
+$ npm run dev
 ```
 
 ## Licensing and Attribution

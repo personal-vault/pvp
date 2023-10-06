@@ -11,8 +11,7 @@
             "port": 9003,
             "pathMappings": {
                 "/var/www": "${workspaceFolder}/roadrunner"
-            },
-            "hostname": "localhost",
+            }
         }
     ]
 }

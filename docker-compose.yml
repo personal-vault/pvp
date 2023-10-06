@@ -68,13 +68,14 @@ services:
       - internal
     restart: unless-stopped
 
-  # viewer:
-  #   build:
-  #     context: ./viewer
-  #   ports:
-  #     - "80:80"
-  #   depends_on:
-  #     - database
+  viewer:
+    build:
+      context: ./viewer
+    ports:
+      - "7080:80"
+    depends_on:
+      - database
+      - roadrunner
 
   # The next services are optional and you can remove them if you don't need them
   ocrmypdf:
