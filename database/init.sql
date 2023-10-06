@@ -9,11 +9,10 @@ CREATE TABLE files (
     date TIMESTAMP,
     lat REAL,
     lon REAL,
-    metadata JSONB DEFAULT NULL,
-    transcript TEXT,
     scan_version INTEGER,
     scanned_at TIMESTAMP,
     analyzed_at TIMESTAMP,
+    transcript TEXT,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     removed_at TIMESTAMP

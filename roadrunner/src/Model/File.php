@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use stdClass;
-
 class File
 {
     public int $id;
@@ -20,6 +18,7 @@ class File
     public int $scan_version = 0;
     public ?string $scanned_at = null;
     public ?string $analyzed_at = null;
+    public ?string $transcript = null;
     public string $created_at;
     public string $updated_at;
     public ?string $removed_at = null;

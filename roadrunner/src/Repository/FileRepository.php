@@ -81,7 +81,9 @@ class FileRepository
                 date = :date,
                 lat = :lat,
                 lon = :lon,
+                transcript = :transcript,
                 scanned_at = :scanned_at,
+                analyzed_at = :analyzed_at,
                 removed_at = :removed_at,
                 updated_at = NOW()
             WHERE path = :path
@@ -95,7 +97,9 @@ class FileRepository
         $stmt->bindValue(':date', $file->date, PDO::PARAM_STR);
         $stmt->bindValue(':lat', $file->lat, PDO::PARAM_STR);
         $stmt->bindValue(':lon', $file->lon, PDO::PARAM_STR);
+        $stmt->bindValue(':transcript', $file->transcript, PDO::PARAM_STR);
         $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
+        $stmt->bindValue(':analyzed_at', $file->analyzed_at, PDO::PARAM_STR);
         $stmt->bindValue(':removed_at', $file->removed_at, PDO::PARAM_STR);
         $stmt->execute();
     }
@@ -112,7 +116,9 @@ class FileRepository
                 date = :date,
                 lat = :lat,
                 lon = :lon,
+                transcript = :transcript,
                 scanned_at = :scanned_at,
+                analyzed_at = :analyzed_at,
                 removed_at = :removed_at,
                 updated_at = NOW()
             WHERE id = :id
@@ -127,7 +133,9 @@ class FileRepository
         $stmt->bindValue(':date', $file->date, PDO::PARAM_STR);
         $stmt->bindValue(':lat', $file->lat, PDO::PARAM_STR);
         $stmt->bindValue(':lon', $file->lon, PDO::PARAM_STR);
+        $stmt->bindValue(':transcript', $file->transcript, PDO::PARAM_STR);
         $stmt->bindValue(':scanned_at', $file->scanned_at, PDO::PARAM_STR);
+        $stmt->bindValue(':analyzed_at', $file->analyzed_at, PDO::PARAM_STR);
         $stmt->bindValue(':removed_at', $file->removed_at, PDO::PARAM_STR);
         $stmt->execute();
     }
@@ -207,7 +215,9 @@ class FileRepository
         $file->date = $row['date'];
         $file->lat = $row['lat'] ? (float)$row['lat'] : null;
         $file->lon = $row['lon'] ? (float)$row['lon'] : null;
+        $file->transcript = $row['transcript'];
         $file->scanned_at = $row['scanned_at'];
+        $file->analyzed_at = $row['analyzed_at'];
         $file->scan_version = $row['scan_version'];
         $file->created_at = $row['created_at'];
         $file->updated_at = $row['updated_at'];

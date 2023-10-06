@@ -3,7 +3,6 @@
 namespace App\Scan;
 
 use App\Model\File;
-use App\Parser\Parser;
 use App\Repository\FileRepository;
 use App\Task\AnalyzeTask;
 use Psr\Log\LoggerInterface;
@@ -17,8 +16,7 @@ class FileCreated implements ScanInterface
     public function __construct(
         private FileRepository $file_repository,
         private JobsInterface $jobs,
-        private LoggerInterface $logger,
-        private Parser $parser
+        private LoggerInterface $logger
     ) {}
 
     public function process(string $path, ?string $hash = null): void
@@ -38,9 +36,11 @@ class FileCreated implements ScanInterface
         }
 
         // Parse file
-        $file = $this->parser->parse($path, $hash);
+        $file = new File($hash, $path);
         $file->scanned_at = date('Y-m-d H:i:s');
         $file->scan_version = self::VERSION;
+        $file->name = basename($path);
+        $file->size = filesize($path);
         // Insert into DB
         $this->file_repository->create($file);
 
